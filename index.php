@@ -6,19 +6,19 @@
     require_once('vendor/autoload.php');
     
     
-    /* Creating slim app and setting global/session variables */
+    /* Slim app and global/session variables */
     $app = new \Slim\App;
     
     
     
-    /* Setting up Middlewares */
+    /* Middlewares */
     
     
     /* Main route */
     $app->get('/', function($request, $response){});
     
     
-    /* Including route files */
+    /* Routes */
     
     
     
