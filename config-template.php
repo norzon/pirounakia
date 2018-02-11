@@ -4,7 +4,7 @@
             "domain" => "",
             "username" => "",
             "password" => "",
-            "table" => ""
+            "database" => ""
         )
     );
 ?>
