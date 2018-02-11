@@ -12,6 +12,19 @@
     
     
     /* Middlewares */
+    $app->add(function ($request, $response, $next) {
+        // If app not initialized
+        $path = '/'. $request->getUri()->getPath();
+        if (!file_exists('./config.php') && $path !== '/setup') {
+            $response
+                ->withStatus(503)
+                ->withHeader('Content-Type', 'text.html')
+                ->write(file_get_contents('./page/503.html'));
+        } else {
+            $response = $next($request, $response);
+        }
+        return $response;
+    });
     
     
     /* Main route */
