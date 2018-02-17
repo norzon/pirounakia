@@ -30,6 +30,13 @@
         
         
         /**
+         * The PDO object connector
+         * @access private
+         */
+        private $conn;
+        
+        
+        /**
          * Valid db connection
          * @access private
          */
@@ -85,6 +92,8 @@
                 $msg = $e->getMessage();
                 $this->setConnStatus(false, $msg);
                 $this->log[] = "Error connecting to $domain with $username. $msg";
+            } finally {
+                $db = null;
             }
         }
         
@@ -139,6 +148,7 @@
         
         /**
          * Generic wrapper for the PDO "exec" function
+         * @param str The string to execute
          */
         public function exec($str) {
             $result;
@@ -148,7 +158,7 @@
                 if (!$this->hasPDOError()) {
                     $result = true;
                     $this->log[] = "Succesful: '$str'";
-                }  else {
+                } else {
                     $error = $this->parsePDOError();
                     $result = false;
                     $this->log[] = "Failed: '$str'";

@@ -4,6 +4,8 @@
     
     /* Require basic files below */
     require_once('vendor/autoload.php');
+    require_once('class/Database.php');
+    require_once('class/Setup.php');
     
     
     /* Slim app and global/session variables */

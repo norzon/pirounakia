@@ -1,5 +1,6 @@
 <?php
-    require_once('./Database.php')
+    require_once('./class/Database.php');
+    
     class Setup {
         
         /**
@@ -48,8 +49,11 @@
         }
         
         
-        private function createDB ($dbname = $this->options["db"]["database"]) {
-            $this-db->exec("CREATE DATABASE `test` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;");
+        private function createDB ($dbname = false) {
+            if ($dbname === false) {
+                $dbname = $this->options["db"]["database"];
+            }
+            $this->db->exec("CREATE DATABASE `test` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;");
         }
     }
 ?>
