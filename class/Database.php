@@ -124,6 +124,16 @@
             );
         }
         
+        
+        /**
+         * Gets the last error
+         * @access public
+         */
+        public function getLastLog () {
+            return end($this->log);
+        }
+        
+        
         /**
          * Gets the PDO error and resturns it as string
          * @param conn The PDO connector object
