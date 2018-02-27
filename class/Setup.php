@@ -1,14 +1,5 @@
 <?php
-    require_once('./class/Database.php');
-    
-    class Setup {
-        
-        /**
-         * Object to contain the Database class
-         * @access private
-         */
-        private $db;
-        
+    class Setup extends Database {
         
         /**
          * Options array, given at class initialization
@@ -18,9 +9,33 @@
         
         
         /**
+         * Temporary array to store the tablenames
+         * @access private
+         */
+        private $tablenames;
+        
+        
+        /**
          * Constructor
          * @param options Array key->value
          */
+        
+        // interface SetupOptions {
+        //     db: {
+        //         domain: string;
+        //         port: number;
+        //         username: string;
+        //         password: string;
+        //         database: string;
+        //         prefix: string;
+        //     }
+        //     root: {
+        //         username: string;
+        //         password: string;
+        //     }
+        //     createDBUser: boolean;
+        // }
+         
         public function __contruct ($options = []) {
             if (empty($options))
                 throw new Exception("Empty paramater 'options'");
@@ -30,26 +45,33 @@
                 
             if (!is_array($options["db"]))
                 throw new Exception("Parameter 'options' must contain 'db' array");
+            
                 
-            if (
-                !isset($options["db"]["domain"]) ||
-                !isset($options["db"]["username"]) ||
-                !isset($options["db"]["password"])
-            )
-                throw new Exception("Database parameters not in array 'options'");
+            // Set default values if none given. This is wrong for production,
+            // but it works for a demo project.
+            if (!isset($options["db"]["domain"]))
+                $options["db"]["domain"] = "localhost";
                 
+            if (!isset($options["db"]["port"]))
+                $options["db"]["port"] = "";
+                
+            if (!isset($options["db"]["username"]))
+                $options["db"]["username"] = "root";
+                
+            if (!isset($options["db"]["password"]))
+                $options["db"]["password"] = "";
+                
+            if (!isset($options["db"]["database"]))
+                $options["db"]["database"] = "";
             
             // After all checks, save options array
             $this->options = options;
             
-            // If input is ok, initialize database class
-            $domain = $options["db"]["domain"];
-            $username = $options["db"]["username"];
-            $password = $options["db"]["password"];
-            $database = $options["db"]["database"];
-            $this->db = new Database($domain, $username, $password, $database);
+            // If db options is ok, initialize database class
+            parent::__construct($options["db"]);
             
-            if ($options["db"]["create_datbase"]) {
+            
+            if ($options["create_datbase"]) {
                 if (!$this->createDB($database))
                     throw new Exception($this->customError("Failed to create the Database"));
             }
@@ -92,8 +114,9 @@
          * @param prefix
          */
         private function createTableCompany ($prefix) {
+            $tablename = $prefix . "company";
             return $this->db->exec(
-                "CREATE TABLE `" . $prefix . "company` (
+                "CREATE TABLE `$tablename` (
                     `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
                     `name` mediumtext COLLATE utf8_bin NOT NULL
                 );"
@@ -106,8 +129,10 @@
          * @param prefix
          */
         private function createTableStore ($prefix) {
+            $tablename = $prefix . "store";
+            $constraint = $tablename . "_cpid";
             return $this->db->exec(
-                "CREATE TABLE `" . $prefix . "store` (
+                "CREATE TABLE `$tablename` (
                     `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
                     `cpid` int(11) NOT NULL,
                     `name` text COLLATE utf8_bin NOT NULL,
@@ -117,11 +142,41 @@
                     `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
                     `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
                 );
-                ALTER TABLE `store`
+                ALTER TABLE `$tablename`
                     ADD KEY `cpid` (`cpid`),
-                    ADD CONSTRAINT `store_cpid` FOREIGN KEY (`cpid`) REFERENCES `company` (`id`);
+                    ADD CONSTRAINT `$constraint` FOREIGN KEY (`cpid`) REFERENCES `company` (`id`);
                 "
             );
         }
+        
+        
+        /**
+         * Creates the table 'Table'
+         * @param prefix
+         */
+        private function createTableTable($prefix) {
+            $tablename = $prefix . "store";
+            $constraint = $tablename . "_stid";
+            return $this->db->exec(
+                "CREATE TABLE `$tablename` (
+                    `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                    `stid` int(11) NOT NULL,
+                    `number` varchar(255) COLLATE utf8_bin NOT NULL,
+                    `seats` tinyint(3) UNSIGNED NOT NULL,
+                    `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                    `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+                  );
+                  ALTER TABLE `$tablename`
+                    ADD KEY `stid` (`stid`),
+                    ADD CONSTRAINT `$constraint` FOREIGN KEY (`stid`) REFERENCES `store` (`id`) ON UPDATE NO ACTION;
+                "
+            );
+        }
+        
+        
+        /**
+         * Create the table 'Dish'
+         * @param prefix
+         */
     }
 ?>
