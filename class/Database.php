@@ -3,9 +3,9 @@
         
         /**
          * Array to store the table names for easy reference
-         * @access private
+         * @access protected
          */
-        private $tablenames = array(
+        protected $tablenames = array(
             "company" => "",
             "store" => "",
             "table" => "",
@@ -19,13 +19,9 @@
         
         
         /**
-         * Stores the prefix of a table name
-         * Eg. 'company' can become 'My_custom_Prefix_company'
-         * @access private
+         * Constructor
+         * @param options Array of key->value
          */
-        private $prefix;
-        
-        
         public function __construct($options) {
             $dbconfig = array();
             $prefix = isset($options["prefix"]) ? $options["prefix"] : "";
@@ -44,10 +40,10 @@
                 
             if (isset($options["database"]))
                 $dbconfig["database"] = $options["database"];
-                
+            
             parent::__construct($dbconfig);
             
-            foreach ($this->tablenames as $name) {
+            foreach ($this->tablenames as $name => $value) {
                 $this->tablenames[$name] = $prefix . $name;
             }
         }

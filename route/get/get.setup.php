@@ -1,6 +1,9 @@
 <?php
+    if(!isset($app)) die();
     $app->get("/setup", function($request, $response){
-        global $baseurl;
-        require_once("$baseurl/page/setup.php");
+        return $response
+            ->withStatus(200)
+            ->withHeader('Content-Type', 'text/html')
+            ->write(file_get_contents("./page/setup.html"));
     });
 ?>
