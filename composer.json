@@ -2,7 +2,7 @@
     "name": "leontas/pirounakia",
     "description": "Coursework project for college",
     "require": {
-        "slim/slim": "^3.9"
+        "slim/slim": "3.9"
     },
     "authors": [
         {
