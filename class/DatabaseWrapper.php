@@ -92,7 +92,9 @@
             
             // Try to connect
             try {
-                $db = new PDO($str, $this->username, $this->password);
+                $db = new PDO($str, $this->username, $this->password, array(
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                ));
                 if (!$this->hasPDOError($db)) {
                     $this->conn = $db;
                     $this->setConnStatus(true, "Connected successfully");
@@ -177,20 +179,26 @@
          * @access protected
          * @param str The string to execute
          */
-        protected function exec($str) {
-            $result;
+        protected function exec($str, $msg = null) {
+            $result = false;
+            $msg = dataDefault($msg, $str);
             try {
                 $db = $this->conn;
+                $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
                 $db->exec($str);
+                var_dump($db->errorInfo());
                 if (!$this->hasPDOError()) {
                     $result = true;
-                    $this->log[] = "Succesful: '$str'";
+                    $this->log[] = "Successful: '$msg'";
                 } else {
                     $error = $this->parsePDOError();
                     $result = false;
-                    $this->log[] = "Failed: '$str'";
+                    $this->log[] = "Failed: '$msg'";
                 }
             } catch (PDOException $e) {
+                $result = false;
+                $this->log[] = "Exception: '" . $e->getMessage() . "'";
+            } catch (Exception $e) {
                 $result = false;
                 $this->log[] = "Exception: '" . $e->getMessage() . "'";
             } finally {

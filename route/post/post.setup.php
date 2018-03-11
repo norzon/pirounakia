@@ -5,12 +5,12 @@
             $data = $request->getParsedBody();
             
             dataCheck($data["db"], "Database options not given", "array");
-            $domain = dataCheck($data["db"]["domain"], "Database domain is not set");
-            $port = dataCheck($data["db"]["port"], "Database port is not set");
-            $username = dataCheck($data["db"]["username"], "Database username is not set");
-            $password = dataCheck($data["db"]["password"], "Database password is not set");
-            $database = dataCheck($data["db"]["database"], "Database name is not set");
-            $prefix = dataCheck($data["db"]["prefix"], "Table prefix is not set");
+            $domain = dataDefault($data["db"]["domain"], "localhost");
+            $port = dataDefault($data["db"]["port"], "");
+            $username = dataDefault($data["db"]["username"], "root");
+            $password = dataDefault($data["db"]["password"], "");
+            $database = dataDefault($data["db"]["database"], "pirounakia");
+            $prefix = dataDefault($data["db"]["prefix"], "");
 
             $setup = new Setup(array(
                 "domain" => $domain,

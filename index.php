@@ -6,12 +6,16 @@
     require_once('vendor/autoload.php');
     require_once('class/DatabaseWrapper.php');
     require_once('class/Database.php');
-    require_once('class/Setup.php');
     require_once('function/dataCheck.php');
+    require_once('function/dataDefault.php');
+    
+    if (!file_exists('config.php')) {
+        require_once('class/Setup.php');
+    }
     
     
     /* Slim app and global/session variables */
-    $app = new \Slim\App;
+    $app = new \Slim\App(['settings' => ['displayErrorDetails' => true]]);
 
     
     
@@ -23,14 +27,14 @@
     $app->add(function ($request, $response, $next) {
         global $path;
         // If app not initialized
-        if (!file_exists("config.php") && $path !== "/setup") {
-            $response
-                ->withStatus(503)
-                ->withHeader("Content-Type", "text/html")
-                ->write(file_get_contents("./page/503.html"));
-        } else {
+        // if (!file_exists("config.php") && $path !== "/setup") {
+        //     $response
+        //         ->withStatus(503)
+        //         ->withHeader("Content-Type", "text/html")
+        //         ->write(file_get_contents("./page/503.html"));
+        // } else {
             $response = $next($request, $response);
-        }
+        // }
         return $response;
     });
     
