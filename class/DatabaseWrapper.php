@@ -240,7 +240,7 @@
             } else {
                 $this->prep->execute();
             }
-            $this->lastResult = $this->prep->fetchAll(PDO::FETCH_ASSOC);
+            $this->lastResult = $this->prep->fetchAll(PDO::FETCH_OBJ);
             return $this->lastResult;
         }
     }

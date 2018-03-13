@@ -64,13 +64,22 @@
             ->write(file_get_contents("./page/setup.html"));
         } else {
             $response = $response->withStatus(200)->withHeader("Content-Type", "text/html");
-            
+            $options_raw = $db->getOptions();
+            $options = array();
+            foreach ($options_raw as $row) {
+                $options[$row->alias] = $row->value;
+            }
             $twig = new \Slim\Views\Twig('page');
-            return $twig->render($response, "twig/base.twig", array(
+            $data = array(
                 "baseurl" => $baseurl,
                 "session" => $_SESSION,
-                "options" => $db->getOptions()
-            ));
+                "options" => $options
+            );
+            // echo "<pre>";
+            // var_dump($options["site_title"]);
+            // echo "</pre>";
+            // die();
+            return $twig->render($response, "twig/base.twig", $data);
         }
     });
     
