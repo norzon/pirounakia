@@ -24,19 +24,19 @@
     !Important! The last declared runs first
     */
     // Setup middleware
-    $app->add(function ($request, $response, $next) {
-        global $path;
-        // If app not initialized
-        // if (!file_exists("config.php") && $path !== "/setup") {
-        //     $response
-        //         ->withStatus(503)
-        //         ->withHeader("Content-Type", "text/html")
-        //         ->write(file_get_contents("./page/503.html"));
-        // } else {
-            $response = $next($request, $response);
-        // }
-        return $response;
-    });
+    // $app->add(function ($request, $response, $next) {
+    //     global $path;
+    //     If app not initialized
+    //     if (!file_exists("config.php") && $path !== "/setup") {
+    //         $response
+    //             ->withStatus(503)
+    //             ->withHeader("Content-Type", "text/html")
+    //             ->write(file_get_contents("./page/503.html"));
+    //     } else {
+    //         $response = $next($request, $response);
+    //     }
+    //     return $response;
+    // });
     
     
     // Set global variables
@@ -52,13 +52,21 @@
     
     
     /* Main route */
-    $app->get('/', function($request, $response){});
+    $app->get('/', function($request, $response){
+        if (!file_exists("config.php")) {
+            return $response
+            ->withStatus(200)
+            ->withHeader('Content-Type', 'text/html')
+            ->write(file_get_contents("./page/setup.html"));
+        } else {
+            // load index page
+        }
+    });
     
     
     /* Routes */
     // Include setup route only if config does not exist
     if (!file_exists('config.php')) {
-        require_once('route/get/get.setup.php');
         require_once('route/post/post.setup.php');
     } else {
         
