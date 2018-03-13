@@ -20,7 +20,7 @@
     /* Slim app and global/session variables */
     $app = new \Slim\App(['settings' => ['displayErrorDetails' => true]]);
 
-    
+
     
     /* 
     --- Middlewares ---
@@ -56,17 +56,21 @@
     
     /* Main route */
     $app->get('/', function($request, $response){
-        global $db, $options;
+        global $db, $baseurl;
         if (!file_exists("config.php")) {
             return $response
             ->withStatus(200)
             ->withHeader('Content-Type', 'text/html')
             ->write(file_get_contents("./page/setup.html"));
         } else {
-            $response = $response
-            ->withStatus(200)
-            ->withHeader("Content-Type", "text/html");
-            return $this->view->render($response, "twig/base.twig", $db->getOptions());
+            $response = $response->withStatus(200)->withHeader("Content-Type", "text/html");
+            
+            $twig = new \Slim\Views\Twig('page');
+            return $twig->render($response, "twig/base.twig", array(
+                "baseurl" => $baseurl,
+                "session" => $_SESSION,
+                "options" => $db->getOptions()
+            ));
         }
     });
     

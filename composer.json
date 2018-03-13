@@ -3,7 +3,8 @@
     "description": "Coursework project for college",
     "require": {
         "slim/slim": "3.9",
-        "twig/twig": "2.4.6"
+        "twig/twig": "2.4.6",
+        "slim/twig-view": "2.3"
     },
     "authors": [
         {
