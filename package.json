@@ -1,0 +1,27 @@
+{
+  "name": "pirounakia",
+  "version": "1.0.0",
+  "description": "A site about a restaurant with reservations and a back office",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/norzon/pirounakia.git"
+  },
+  "author": "Alexandros Leontakianakos",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/norzon/pirounakia/issues"
+  },
+  "homepage": "https://github.com/norzon/pirounakia#readme",
+  "dependencies": {
+    "bootstrap": "4.0.0",
+    "font-awesome": "4.7.0",
+    "jquery": "3.3.1",
+    "popper.js": "1.14.1"
+  }
+}

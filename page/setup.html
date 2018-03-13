@@ -6,12 +6,91 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Project Setup</title>
     <!-- Bootstrap -->
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+        #input-port {
+            margin-top: 2px;
+        }
+        @media (min-width: 768px) {
+            #wrapper {
+                margin-top: 5vh;
+            }
+            #input-domain, #input-port {
+                margin: 0 -2px;
+            }
+            #input-port {
+                margin-left: -1px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <form method="post">
-        asd
-    </form>
-    
+    <div id="wrapper" class="container py-3">
+        <div class="col-lg-6 col-md-10 m-auto px-4 py-3">
+            <div class="display-4 mb-4">Database Setup</div>
+            <form class="d-flex flex-wrap">
+                <div class="form-group col-md-12">
+                    <label class="d-block" for="input-domain">Domain</label>
+                    <input type="text" class="form-control d-inline-block col-md-8" id="input-domain" placeholder="localhost">
+                    <input type="text" class="form-control d-inline-block col-md-4" id="input-port" placeholder="3306">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="input-username">Username</label>
+                    <input type="text" class="form-control" id="input-username" placeholder="myUsername">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="input-password">Password</label>
+                    <input type="password" class="form-control" id="input-password" placeholder="myPassword">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="input-dbname">Database name</label>
+                    <input type="text" class="form-control" id="input-dbname" placeholder="myDatabase">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="input-prefix">Table prefix</label>
+                    <input type="text" class="form-control" id="input-prefix" placeholder="prefix_">
+                </div>
+                <button type="submit" class="btn btn-primary ml-auto mt-3">Submit</button>
+            </form>
+        </div>
+    </div>
     <!-- Bootstrap -->
+    <script src="node_modules/popper.js/dist/popper.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- jQuery -->
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+
+    <!-- Custom Script -->
+    <script>
+        // Find baseurl and save it to a const.
+        // const baseurl = "";
+        
+        function getData () {
+            return {
+                domain: $("#input-domain").val(),
+                port: $("#input-port").val(),
+                username: $("#input-username").val(),
+                password: $("#input-password").val(),
+                name: $("#input-dbname").val(),
+                prefix: $("#input-prefix").val()
+            }
+        }
+
+        $("form").on("submit", function(e){
+            e.preventDefault();
+            console.log(getData());
+            $.ajax({
+                url: `setup`,
+                method: "POST",
+                data: getData()
+            })
+            .done(function(response){
+                console.log(response);
+            })
+            .fail(function(...a){
+                console.log(a);
+            });
+        });
+    </script>
 </body>
 </html>
