@@ -7,6 +7,8 @@
     <title>Project Setup</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Toastr -->
+    <link rel="stylesheet" href="node_modules/toastr/build/toastr.min.css">
     <style>
         #input-port {
             margin-top: 2px;
@@ -22,13 +24,25 @@
                 margin-left: -1px;
             }
         }
+        [hidden] {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
     <div id="wrapper" class="container py-3">
         <div class="col-lg-6 col-md-10 m-auto px-4 py-3">
             <div class="display-4 mb-4">Database Setup</div>
-            <form class="d-flex flex-wrap">
+            <div id="result" hidden>
+                <div class="form-group d-flex col-md-12">
+                    <label style="margin: 0;" class="p-2 w-25">File name</label>
+                    <input id="result-filename" readonly="" class="form-control d-inline w-100" type="text">
+                </div>
+                <div class="form-group col-md-12">
+                    <textarea id="result-contents" class="w-100 rounded border py-2 px-3" style="height: 300px;"></textarea>
+                </div>
+            </div>
+            <form id="form" class="d-flex flex-wrap">
                 <div class="form-group col-md-12">
                     <label class="d-block" for="input-domain">Domain</label>
                     <input type="text" class="form-control d-inline-block col-md-8" id="input-domain" placeholder="localhost">
@@ -54,41 +68,101 @@
             </form>
         </div>
     </div>
-    <!-- Bootstrap -->
-    <script src="node_modules/popper.js/dist/popper.min.js"></script>
-    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- jQuery -->
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Toastr -->
+    <script src="node_modules/toastr/build/toastr.min.js"></script>
 
     <!-- Custom Script -->
     <script>
-        // Find baseurl and save it to a const.
-        // const baseurl = "";
-        
+        // Basic function to get the post setup data
         function getData () {
             return {
                 domain: $("#input-domain").val(),
                 port: $("#input-port").val(),
                 username: $("#input-username").val(),
                 password: $("#input-password").val(),
-                name: $("#input-dbname").val(),
+                database: $("#input-dbname").val(),
                 prefix: $("#input-prefix").val()
             }
         }
 
-        $("form").on("submit", function(e){
-            e.preventDefault();
-            console.log(getData());
+
+        function setupToastr () {
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": false,
+                "positionClass": "toast-top-center",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": 300,
+                "hideDuration": 250,
+                "timeOut": 0,
+                "extendedTimeOut": 0,
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+        }
+
+
+        function attemptSetup () {
             $.ajax({
                 url: `setup`,
                 method: "POST",
                 data: getData()
             })
             .done(function(response){
-                console.log(response);
+                if (typeof response === "string" && (response.charAt(0) === "{" || response.charAt(0) === "[")) {
+                    response = JSON.parse(response);
+                }
+                if (response.success) {
+                    toastr.success(response.description);
+                    setTimeout(function(){
+                        let timeout = 5;
+                        toastr.success(`Reloading the page in ${timeout}`);
+                        setTimeout(function(){
+                            window.location.reload();
+                        }, timeout * 5);
+                    }, 2500);
+                } else if (response.file) {
+                    $("#form").attr("hidden", "");
+                    toastr.warning(response.description);
+                    $("#result-filename").val(response.file.name);
+                    $("#result-contents").val(response.file.data);
+                    console.log(response.log)
+                    $("#result").removeAttr("hidden");
+                } else {
+                    toastr.error(response.description);
+                }
             })
-            .fail(function(...a){
-                console.log(a);
+            .fail(function(jqXHR, textStatus) {
+                if (typeof jqXHR.responseJSON === "object") {
+                    textStatus = jqXHR.responseJSON.description;
+                }
+                toastr.error(textStatus, "Request failed");
+            });
+        }
+
+        // On document ready attach the event listener.
+        // This is mostly for compatibility reasons
+        $(function(){
+            setupToastr();
+            
+            $("#form").on("submit", function(e){
+                e.preventDefault(); // Prevent the page from posting the request
+                attemptSetup();
+            });
+
+            $("#result-filename, #result-contents").on("focus", function(){
+                if (this.select) { this.select(); } 
+                else { this.setSelectionRange(0, this.value.length); }
             });
         });
     </script>

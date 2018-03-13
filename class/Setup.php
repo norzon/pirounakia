@@ -35,7 +35,9 @@
             
             // If db options is ok, initialize database class
             parent::__construct($options);
-            
+            if ($this->getConnStatus()["valid"] == false) {
+                throw new Exception($this->getConnStatus()["status"]);
+            }
             $this->createSchema();
         }
 

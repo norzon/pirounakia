@@ -186,7 +186,6 @@
                 $db = $this->conn;
                 $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
                 $db->exec($str);
-                var_dump($db->errorInfo());
                 if (!$this->hasPDOError()) {
                     $result = true;
                     $this->log[] = "Successful: '$msg'";
