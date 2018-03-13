@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block head %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>{{ site_title }}</title>
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+        <!-- Toastr -->
+        <link rel="stylesheet" href="node_modules/toastr/build/toastr.min.css">
+        
+        {% block custom_css %}{% endblock custom_css %}
+
+    {% endblock head %}
+</head>
+<body>
+
+    
+    
+    <!-- jQuery -->
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Toastr -->
+    <script src="node_modules/toastr/build/toastr.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

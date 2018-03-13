@@ -47,6 +47,19 @@
         
         
         /**
+         * The last prepared statement
+         * @access private
+         */
+        private $prep;
+
+
+        /**
+         * The last result of the last executed statement
+         * @access private
+         */
+        private $lastResult;
+        
+        /**
          * Valid db connection
          * @access private
          */
@@ -179,7 +192,7 @@
          * @access protected
          * @param str The string to execute
          */
-        protected function exec($str, $msg = null) {
+        protected function exec ($str, $msg = null) {
             $result = false;
             $msg = dataDefault($msg, $str);
             try {
@@ -203,6 +216,32 @@
             } finally {
                 return $result;
             }
+        }
+
+
+        /**
+         * Generic wrapper for the prepared statement
+         * @access protected
+         * @param str The SQL string to be prepared
+         */
+        protected function prepare ($str) {
+            $this->prep = $this->conn->prepare($str);
+        }
+
+
+        /**
+         * Generic wrapper for statement execution
+         * @access protected
+         * @param values An array containing the values to pass to the prepared statement
+         */
+        protected function execute ($values = null) {
+            if (is_array($values)) {
+                $this->prep->execute($values);
+            } else {
+                $this->prep->execute();
+            }
+            $this->lastResult = $this->prep->fetchAll(PDO::FETCH_ASSOC);
+            return $this->lastResult;
         }
     }
 ?>

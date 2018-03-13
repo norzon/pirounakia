@@ -6,15 +6,19 @@
          * @access protected
          */
         protected $tablenames = array(
+            "category" => "",
             "company" => "",
-            "store" => "",
-            "table" => "",
             "dish" => "",
-            "store_dish" => "",
+            "dish_ingredient" => "",
+            "employee" => "",
+            "ingredient" => "",
+            "options" => "",
+            "orders" => "",
             "reservation" => "",
-            "order" => "",
-            "reservation_order" => "",
-            "customer" => "",
+            "store" => "",
+            "store_dish" => "",
+            "tables" => "",
+            "user" => ""
         );
         
         
@@ -55,6 +59,18 @@
          */
         public function getTableNames () {
             return $this->tablenames;
+        }
+
+
+        /**
+         * 
+         */
+        public function getOptions () {
+            $this->prepare(
+                "SELECT *
+                FROM {$this->tablenames['options']};"
+            );
+            return $this->execute();
         }
     }
 ?>

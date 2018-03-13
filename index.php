@@ -11,6 +11,9 @@
     
     if (!file_exists('config.php')) {
         require_once('class/Setup.php');
+    } else {
+        $config = require_once("config.php");
+        $db = new Database($config["db"]);
     }
     
     
@@ -53,13 +56,17 @@
     
     /* Main route */
     $app->get('/', function($request, $response){
+        global $db, $options;
         if (!file_exists("config.php")) {
             return $response
             ->withStatus(200)
             ->withHeader('Content-Type', 'text/html')
             ->write(file_get_contents("./page/setup.html"));
         } else {
-            // load index page
+            $response = $response
+            ->withStatus(200)
+            ->withHeader("Content-Type", "text/html");
+            return $this->view->render($response, "twig/base.twig", $db->getOptions());
         }
     });
     
