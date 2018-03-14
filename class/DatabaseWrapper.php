@@ -47,10 +47,10 @@
         
         
         /**
-         * The last prepared statement
+         * A collection of prepared statements
          * @access private
          */
-        private $prep;
+        private $collection;
 
 
         /**
@@ -102,6 +102,8 @@
 
             if (!empty($this->database))
                 $str .= ";dbname=$this->database";
+            
+            $this->collection = new QueryCollection();
             
             // Try to connect
             try {
@@ -219,29 +221,57 @@
         }
 
 
+        // /**
+        //  * Generic wrapper for the prepared statement
+        //  * @access protected
+        //  * @param str The SQL string to be prepared
+        //  */
+        // protected function prepare ($queries = []) {
+        //     if (!is_array($queries))
+        //         $queries = [$queries];
+            
+        //     $this->prep = [];
+        //     foreach ($queries as $query) {
+        //         $this->prep[] = $this->conn->prepare($query);
+        //     }
+        // }
+
+
+        // /**
+        //  * Generic wrapper for statement execution
+        //  * @access protected
+        //  * @param values An array containing the values to pass to the prepared statement
+        //  */
+        // protected function execute ($values = null, $index = 1) {
+        //     if (count($this->prep) == 1) {
+        //         if (is_array($values)) {
+        //             $this->prep[0]->execute($values);
+        //         } else {
+        //             $this->prep[0]->execute();
+        //         }
+        //     }
+        //     $this->lastResult = $this->prep->fetchAll(PDO::FETCH_OBJ);
+        //     return $this->lastResult;
+        // }
+
         /**
          * Generic wrapper for the prepared statement
          * @access protected
-         * @param str The SQL string to be prepared
          */
-        protected function prepare ($str) {
-            $this->prep = $this->conn->prepare($str);
+        protected function prepare ($id, $sql) {
+            $stmt = $this->conn->prepare($sql);
+            $this->collection->add(new Query($id, $stmt));
         }
 
 
         /**
          * Generic wrapper for statement execution
          * @access protected
-         * @param values An array containing the values to pass to the prepared statement
          */
-        protected function execute ($values = null) {
-            if (is_array($values)) {
-                $this->prep->execute($values);
-            } else {
-                $this->prep->execute();
-            }
-            $this->lastResult = $this->prep->fetchAll(PDO::FETCH_OBJ);
-            return $this->lastResult;
+        protected function execute ($id, $values = []) {
+            $stmt = $this->collection->get($id); // PDO prepared statement
+            $stmt->execute($values); // PDO execute with $values
+            return $stmt->fetchAll(PDO::FETCH_OBJ);
         }
     }
 ?>

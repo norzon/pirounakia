@@ -4,6 +4,8 @@
     
     /* Require basic files below */
     require_once('vendor/autoload.php');
+    require_once('class/Query.php');
+    require_once('class/QueryCollection.php');
     require_once('class/DatabaseWrapper.php');
     require_once('class/Database.php');
     require_once('function/dataCheck.php');
@@ -75,10 +77,10 @@
                 "session" => $_SESSION,
                 "options" => $options
             );
-            // echo "<pre>";
-            // var_dump($options["site_title"]);
-            // echo "</pre>";
-            // die();
+            echo "<pre>";
+            var_dump($options_raw);
+            echo "</pre>";
+            die();
             return $twig->render($response, "twig/base.twig", $data);
         }
     });

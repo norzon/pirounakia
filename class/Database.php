@@ -67,10 +67,11 @@
          */
         public function getOptions () {
             $this->prepare(
+                "options",
                 "SELECT *
                 FROM {$this->tablenames['options']};"
             );
-            return $this->execute();
+            return $this->execute("options");
         }
     }
 ?>
