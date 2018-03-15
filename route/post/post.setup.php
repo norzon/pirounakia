@@ -1,6 +1,6 @@
 <?php
     if(!isset($app)) die();
-    $app->post("/setup", function($request, $response){
+    $app->post("/", function($request, $response){
         try {
             $data = $request->getParsedBody();
             

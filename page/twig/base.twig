@@ -17,15 +17,20 @@
 </head>
 <body>
 
+    {% block body %}
+    {% endblock body %}
 
-    
-    <!-- jQuery -->
-    <script src="node_modules/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
-    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- Toastr -->
-    <script src="node_modules/toastr/build/toastr.min.js"></script>
-    {% block scripts %}{% endblock %}
+    {% block scripts %}
+        <!-- jQuery -->
+        <script src="node_modules/jquery/dist/jquery.min.js"></script>
+        <!-- Bootstrap -->
+        <script src="node_modules/popper.js/dist/umd/popper.min.js"></script>
+        <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <!-- Toastr -->
+        <script src="node_modules/toastr/build/toastr.min.js"></script>
+
+        {% block custom_js %}{% endblock custom_js %}
+
+    {% endblock scripts %}
 </body>
 </html>

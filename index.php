@@ -56,42 +56,14 @@
     
     
     
-    /* Main route */
-    $app->get('/', function($request, $response){
-        global $db, $baseurl;
-        if (!file_exists("config.php")) {
-            return $response
-            ->withStatus(200)
-            ->withHeader('Content-Type', 'text/html')
-            ->write(file_get_contents("./page/setup.html"));
-        } else {
-            $response = $response->withStatus(200)->withHeader("Content-Type", "text/html");
-            $options_raw = $db->getOptions();
-            $options = array();
-            foreach ($options_raw as $row) {
-                $options[$row->alias] = $row->value;
-            }
-            $twig = new \Slim\Views\Twig('page');
-            $data = array(
-                "baseurl" => $baseurl,
-                "session" => $_SESSION,
-                "options" => $options
-            );
-            echo "<pre>";
-            var_dump($options_raw);
-            echo "</pre>";
-            die();
-            return $twig->render($response, "twig/base.twig", $data);
-        }
-    });
-    
     
     /* Routes */
     // Include setup route only if config does not exist
     if (!file_exists('config.php')) {
+        require_once('route/get/get.setup.php');
         require_once('route/post/post.setup.php');
     } else {
-        
+        require_once('route/get/get.index.php');
     }
     
     
