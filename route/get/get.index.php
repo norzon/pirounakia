@@ -3,6 +3,7 @@
         global $db, $baseurl;
     
         $response = $response->withStatus(200)->withHeader("Content-Type", "text/html");
+        $db->prepareGetOptions();
         $options_raw = $db->getOptions();
         $options = array();
         foreach ($options_raw as $row) {

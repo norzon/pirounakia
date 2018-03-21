@@ -23,7 +23,7 @@
          * @param Query
          */
         public function add (Query $query) {
-            $this->collection[$query->getId()] = $query->getStmt();
+            $this->collection[$query->getId()] = $query;
         }
 
 

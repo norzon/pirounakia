@@ -63,47 +63,113 @@
 
 
         /**
+         * Transforms the array keys to include ':' character at the
+         * beggining of the key
+         */
+        private function transformData ($data) {
+            $new_data = [];
+            foreach ($data as $key => $value) {
+                if ($key[0] !== ':')
+                $new_data[":$key"] = $value;
+            }
+            return $new_data;
+        }
+        
+        
+        private function transformKeys ($data) {
+            $new_data = [];
+            for ($i=0; $i < count($data); $i++) { 
+                $new_data[] = ":{$data[$i]}";
+            }
+            return $new_data;
+        }
+
+
+        /*
+        |----------------------------------------------------------------
+        |
+        |   Database getters below
+        |
+        |----------------------------------------------------------------
+        */
+
+
+        /**
+         * Prepares to get all options
+         * @access public
+         */
+        public function prepareGetOptions () {
+            $this->prepare(
+                "get.options",
+                "SELECT *
+                FROM `{$this->tablenames['options']}`;"
+            );
+        }
+
+        /**
          * Gets the options from the DB
          * @access public
          */
         public function getOptions () {
-            $this->prepare(
-                "get.options",
-                "SELECT *
-                FROM {$this->tablenames['options']};"
-            );
-            return $this->execute("options");
+            return $this->execute("get.options");
         }
 
 
         /**
-         * Get option by alias
-         * @access public
+         * Prepares to get option by some alias
          */
-        public function getOption ($str) {
+        public function prepareGetOption () {
             $this->prepare(
                 "get.option",
                 "SELECT *
-                FROM {$this->tablenames['options']}
-                WHERE `alias` LIKE '%{$str}%';"
+                FROM `{$this->tablenames['options']}`
+                WHERE `alias` LIKE :option;"
             );
-            return $this->execute("options");
         }
 
+        /**
+         * Get option by alias
+         * @access public
+         * @param str The string to search by
+         */
+        public function getOption ($str) {
+            return $this->execute("get.option", array(":option" => "%$str%"));
+        }
+
+
+        /**
+         * Prepare to get all users
+         * @access public
+         */
+        public function prepareGetUsers () {
+            $this->prepare(
+                "get.users",
+                "SELECT *
+                FROM {$this->tablenames['user']};"
+            );
+        }
 
         /**
          * Get all users
          * @access public
          */
         public function getUsers () {
-            $this->prepare(
-                "get.users",
-                "SELECT *
-                FROM {$this->tablenames['user']};"
-            );
             return $this->execute("get.users");
         }
 
+
+        /**
+         * Prepare to get a user by id
+         * @access public
+         */
+        public function prepareGetUserById () {
+            $this->prepare(
+                "get.user",
+                "SELECT *
+                FROM {$this->tablenames['user']}
+                WHERE `id` = :id;"
+            );
+        }
 
         /**
          * Get user by id
@@ -111,15 +177,21 @@
          * @param id The user's id
          */
         public function getUserById ($id) {
+            return $this->execute("get.user", array(":id" => $id));
+        }
+
+
+        /**
+         * Prepare to get user by email
+         */
+        public function prepareGetUserByEmail () {
             $this->prepare(
                 "get.user",
                 "SELECT *
                 FROM {$this->tablenames['user']}
-                WHERE `id` = '$id';"
+                WHERE `email` = :email;"
             );
-            return $this->execute("get.user");
         }
-
 
         /**
          * Get user by email
@@ -127,15 +199,22 @@
          * @param email The user's email
          */
         public function getUserByEmail ($email) {
+            return $this->execute("get.user", array(":email" => $email));
+        }
+
+
+        /**
+         * Prepare to get user by token
+         * @access public
+         */
+        public function prepareGetUserByToken () {
             $this->prepare(
                 "get.user",
                 "SELECT *
                 FROM {$this->tablenames['user']}
-                WHERE `email` = '$email';"
+                WHERE `token` = :token;"
             );
-            return $this->execute("get.user");
         }
-
 
         /**
          * Get user by token
@@ -143,13 +222,64 @@
          * @param token The user's token
          */
         public function getUserByToken ($token) {
+            return $this->execute("get.user", array(":token" => $token));
+        }
+
+
+
+        /*
+        |----------------------------------------------------------------
+        |
+        |   Database inserts below
+        |
+        |----------------------------------------------------------------
+        */
+
+
+        /**
+         * Prepare to insert an option
+         */
+        public function prepareInsertOption () {
             $this->prepare(
-                "get.user",
-                "SELECT *
-                FROM {$this->tablenames['user']}
-                WHERE `token` = '$token';"
+                "insert.option",
+                "INSERT INTO {$this->tablenames['options']} (`alias`, `value`)
+                VALUES (:alias, :value)"
             );
-            return $this->execute("get.user");
+        }
+
+
+        /**
+         * Insert the option by some alias and value
+         * No check needed, since both 'alias' and 'value' must be given
+         */
+        public function insertOption ($data) {
+            $data = $this->transformData($data);
+            return $this->execute("insert.option", $data);
+        }
+
+
+        /**
+         * Prepare to insert a new user
+         */
+        public function prepareInsertUser ($columns) {
+            $col = join($columns, ", ");
+            $val = join($this->transformKeys($columns), ", ");
+            $this->prepare(
+                "insert.user",
+                "INSERT INTO {$this->tablenames['user']} ($col)
+                VALUES ($val)"
+            );
+        }
+
+
+        /**
+         * Insert new user
+         * @access public
+         * @param data An array of key->value pairs
+         */
+        public function insertUser ($data) {
+            $data = $this->transformData($data);
+            return $this->execute("insert.user", $data);
         }
     }
 ?>

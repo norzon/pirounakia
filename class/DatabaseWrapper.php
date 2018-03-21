@@ -221,46 +221,14 @@
         }
 
 
-        // /**
-        //  * Generic wrapper for the prepared statement
-        //  * @access protected
-        //  * @param str The SQL string to be prepared
-        //  */
-        // protected function prepare ($queries = []) {
-        //     if (!is_array($queries))
-        //         $queries = [$queries];
-            
-        //     $this->prep = [];
-        //     foreach ($queries as $query) {
-        //         $this->prep[] = $this->conn->prepare($query);
-        //     }
-        // }
-
-
-        // /**
-        //  * Generic wrapper for statement execution
-        //  * @access protected
-        //  * @param values An array containing the values to pass to the prepared statement
-        //  */
-        // protected function execute ($values = null, $index = 1) {
-        //     if (count($this->prep) == 1) {
-        //         if (is_array($values)) {
-        //             $this->prep[0]->execute($values);
-        //         } else {
-        //             $this->prep[0]->execute();
-        //         }
-        //     }
-        //     $this->lastResult = $this->prep->fetchAll(PDO::FETCH_OBJ);
-        //     return $this->lastResult;
-        // }
-
         /**
          * Generic wrapper for the prepared statement
          * @access protected
          */
         protected function prepare ($id, $sql) {
             $stmt = $this->conn->prepare($sql);
-            $this->collection->add(new Query($id, $stmt));
+            $operation = strtolower((explode(" ", trim($sql)))[0]);
+            $this->collection->add(new Query($id, $stmt, $operation));
         }
 
 
@@ -269,9 +237,15 @@
          * @access protected
          */
         protected function execute ($id, $values = []) {
-            $stmt = $this->collection->get($id); // PDO prepared statement
+            $query = $this->collection->get($id); // The query object
+            $stmt = $query->getStmt(); // PDO prepared statement
             $stmt->execute($values); // PDO execute with $values
-            return $stmt->fetchAll(PDO::FETCH_OBJ);
+            $operation = $query->getOperation();
+            if ($operation === "select") {
+                return $stmt->fetchAll(PDO::FETCH_OBJ);
+            } else {
+                return $stmt->rowCount();
+            }
         }
     }
 ?>
