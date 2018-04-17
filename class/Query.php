@@ -55,7 +55,7 @@
          * @return operation
          */
         public function getOperation () {
-            return $this->opertaion;
+            return $this->operation;
         }
     }
 ?>
