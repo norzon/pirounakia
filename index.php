@@ -28,20 +28,34 @@
     --- Middlewares ---
     !Important! The last declared runs first
     */
-    // Setup middleware
-    // $app->add(function ($request, $response, $next) {
-    //     global $path;
-    //     If app not initialized
-    //     if (!file_exists("config.php") && $path !== "/setup") {
-    //         $response
-    //             ->withStatus(503)
-    //             ->withHeader("Content-Type", "text/html")
-    //             ->write(file_get_contents("./page/503.html"));
-    //     } else {
-    //         $response = $next($request, $response);
-    //     }
-    //     return $response;
-    // });
+    // Middleware for getting token in header
+    // Only a user can use this, not an employee
+    $app->add(function ($request, $response, $next) {
+        global $db;        
+        $headers = $request->getHeaders();
+        $params = $request->getQueryParams();
+        
+        if (isset($headers["Authorization"]) && !empty($headers["Authorization"])) {
+            $token = $headers["Authorization"];
+        }
+
+        if (isset($params["token"]) && !empty($params["token"])) {
+            $token = $params["token"];
+        }
+
+        if (isset($token) && !empty($token)) {
+            $db->prepareGetUserByToken();
+            $user = $db->getUserByToken($token);
+            if (isset($user)) {
+                $_SESSION["logged"] = true;
+                $_SESSION["admin"] = false;
+                $_SESSION["token"] = $token;
+            }
+        }
+        
+        $response = $next($request, $response);
+        return $response;
+    });
     
     
     // Set global variables
