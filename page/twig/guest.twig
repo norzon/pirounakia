@@ -1,1 +1,21 @@
 {% extends "base.twig" %}
+
+{% block navbar_menu %}
+    {{ parent() }}
+    {% include 'template/navbar_item.twig' with {'href': '#login', 'html': 'Login'} %}
+{% endblock navbar_menu %}
+
+{% block body %}
+    {{ parent() }}
+    {# Insert bootstrap modal for login here #}
+{% endblock body %}
+
+{% block custom_js %}
+<script>
+    $(() => {
+        $('a[href="#login"]').click(function(){
+            // open login modal
+        });
+    });
+</script>
+{% endblock custom_js %}

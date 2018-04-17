@@ -16,6 +16,15 @@
             "options" => $options
         );
 
-        return $twig->render($response, "customer.twig", $data);
+        $page = "guest.twig";
+        if (isset($_SESSION["logged"]) && $_SESSION["logged"] == true) {
+            if (isset($_SESSION["admin"]) && $_SESSION["admin"] == true) {
+                $page = "admin.twig";
+            } else {
+                $page = "customer.twig";
+            }
+        }
+
+        return $twig->render($response, $page, $data);
     });
 ?>

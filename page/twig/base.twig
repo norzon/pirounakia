@@ -44,24 +44,13 @@
 				</button>
 				<div class="collapse navbar-collapse" id="navbarResponsive">
 					<ul class="navbar-nav ml-auto">
+					{% block navbar_menu %}
 						{% set str = 'navbar_link_' %}
 						{% for option in options|keys if str in option %}
-							<li class="nav-item">
-								<a class="nav-link js-scroll-trigger" href="#{{ option[str|length:] }}">{{ attribute(options, option)|capitalize }}</a>
-							</li>
-							{# <li class="nav-item">
-								<a class="nav-link js-scroll-trigger" href="#about">{{ options.navbar_ }}</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link js-scroll-trigger" href="#services">Services</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link js-scroll-trigger" href="#portfolio">Portfolio</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
-							</li> #}
+							{% set vars = {'href': '#' ~ option[str|length:], 'html': attribute(options, option)|capitalize } %}
+							{% include 'template/navbar_item.twig' with vars %}
 						{% endfor %}
+					{% endblock navbar_menu %}
 					</ul>
 				</div>
 			</div>
@@ -304,6 +293,8 @@
 
 		<!-- Custom scripts for this template -->
 		<script src="assets/js/creative.min.js"></script>
+
+		<script src="assets/js/api.js"></script>
 
         {% block custom_js %}{% endblock custom_js %}
 

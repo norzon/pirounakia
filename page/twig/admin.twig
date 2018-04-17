@@ -1,0 +1,5 @@
+{% extends "base.twig" %}
+{% block navbar_menu %}
+    {{ parent() }}
+    {% include 'template/navbar_item.twig' with {'href': baseurl ~ '/admin', 'html': 'Admin'} %}
+{% endblock navbar_menu %}
