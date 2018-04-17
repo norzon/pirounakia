@@ -3,18 +3,37 @@
 {% block navbar_menu %}
     {{ parent() }}
     {% include 'template/navbar_item.twig' with {'href': '#login', 'html': 'Login'} %}
+    {% include 'template/navbar_item.twig' with {'href': '#register', 'html': 'Register'} %}
 {% endblock navbar_menu %}
 
 {% block body %}
     {{ parent() }}
-    {# Insert bootstrap modal for login here #}
+    {% include 'template/modal_login.twig' %}
+    {% include 'template/modal_register.twig' %}    
 {% endblock body %}
 
 {% block custom_js %}
 <script>
     $(() => {
-        $('a[href="#login"]').click(function(){
-            // open login modal
+        $('a[href="#login"]').click(() => $("#login-modal").modal("show"));
+        $('a[href="#register"]').click(() => $("#register-modal").modal("show"));
+        
+
+        $("#modal-login-button").click(function(){
+            // Send email and password to the server
+
+            // if all ok reload page
+
+            // if error display error message
+        });
+
+
+        $("#modal-register-button").click(function(){
+            // Send data to the server
+
+            // if all ok reload page
+
+            // if error display error message
         });
     });
 </script>
