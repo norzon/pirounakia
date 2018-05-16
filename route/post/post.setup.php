@@ -4,13 +4,13 @@
         try {
             $data = $request->getParsedBody();
             
-            $domain = dataDefault($data["domain"], "localhost");
+            $domain = dataCheck($data["domain"], "Invalid domain", "empty");
             $port = dataDefault($data["port"], "");
-            $username = dataDefault($data["username"], "root");
+            $username = dataCheck($data["username"], "Invalid username", "empty");
             $password = dataDefault($data["password"], "");
-            $database = dataDefault($data["database"], "pirounakia");
+            $database = dataCheck($data["database"], "Invalid database", "empty");
             $prefix = dataDefault($data["prefix"], "");
-
+            
             $setup = new Setup(array(
                 "domain" => $domain,
                 "port" => $port,

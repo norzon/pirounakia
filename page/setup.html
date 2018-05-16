@@ -45,21 +45,21 @@
             </div>
             <form id="form" class="d-flex flex-wrap">
                 <div class="form-group col-md-12">
-                    <label class="d-block" for="input-domain">Domain</label>
-                    <input type="text" class="form-control d-inline-block col-md-8" id="input-domain" placeholder="localhost">
+                    <label class="d-block" for="input-domain">Domain *</label>
+                    <input type="text" class="form-control d-inline-block col-md-8" id="input-domain" placeholder="localhost" required>
                     <input type="text" class="form-control d-inline-block col-md-4" id="input-port" placeholder="3306">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="input-username">Username</label>
-                    <input type="text" class="form-control" id="input-username" placeholder="myUsername">
+                    <label for="input-username">Username *</label>
+                    <input type="text" class="form-control" id="input-username" placeholder="myUsername" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="input-password">Password</label>
                     <input type="password" class="form-control" id="input-password" placeholder="myPassword">
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="input-dbname">Database name</label>
-                    <input type="text" class="form-control" id="input-dbname" placeholder="myDatabase">
+                    <label for="input-dbname">Database name *</label>
+                    <input type="text" class="form-control" id="input-dbname" placeholder="myDatabase" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="input-prefix">Table prefix</label>
@@ -81,7 +81,7 @@
     <script>
         // Basic function to get the post setup data
         function getData () {
-            return {
+            let data = {
                 domain: $("#input-domain").val(),
                 port: $("#input-port").val(),
                 username: $("#input-username").val(),
@@ -89,6 +89,12 @@
                 database: $("#input-dbname").val(),
                 prefix: $("#input-prefix").val()
             }
+            Object.keys(data).forEach(key => {
+                if (!data[key]) {
+                    data[key] = null;
+                }
+            });
+            return data;
         }
     
         function toggleLoader () {

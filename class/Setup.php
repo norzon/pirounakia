@@ -20,13 +20,11 @@
             if (!is_array($options))
             throw new Exception("Parameter 'options' must be array of key value pairs");
             
-            // Set default values if none given. This is wrong for production,
-            // but it works for a demo project.
-            dataCheck($options["domain"], "Database domain is not set");
+            dataCheck($options["domain"], "Database domain is not set", "empty");
             dataCheck($options["port"], "Database port is not set");
-            dataCheck($options["username"], "Database username is not set");
+            dataCheck($options["username"], "Database username is not set", "empty");
             dataCheck($options["password"], "Database password is not set");
-            dataCheck($options["database"], "Database name is not set");
+            dataCheck($options["database"], "Database name is not set", "empty");
             dataCheck($options["prefix"], "Database table prefix is not set");
             
             
