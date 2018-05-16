@@ -7,6 +7,7 @@
     <title>Project Setup</title>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="node_modules/font-awesome/css/font-awesome.min.css">
     <!-- Toastr -->
     <link rel="stylesheet" href="node_modules/toastr/build/toastr.min.css">
     <style>
@@ -32,7 +33,7 @@
 <body>
     <div id="wrapper" class="container py-3">
         <div class="col-lg-6 col-md-10 m-auto px-4 py-3">
-            <div class="display-4 mb-4">Database Setup</div>
+            <div class="display-4 mb-4">Database Setup <i id="loader" class="fa fa-spinner fa-spin" style="display: none;"></i></div>
             <div id="result" hidden>
                 <div class="form-group d-flex col-md-12">
                     <label style="margin: 0;" class="p-2 w-25">File name</label>
@@ -89,7 +90,17 @@
                 prefix: $("#input-prefix").val()
             }
         }
-
+    
+        function toggleLoader () {
+            if (!$("#loader").is(":visible")) {
+                $('#form input').attr('disabled', '');
+                $('#form button[type="submit"]').attr('disabled', '');
+            } else {
+                $('#form input').removeAttr('disabled');
+                $('#form button[type="submit"]').removeAttr('disabled', '');
+            }
+            $("#loader").fadeToggle();
+        }
 
         function setupToastr () {
             toastr.options = {
@@ -113,6 +124,7 @@
 
 
         function attemptSetup () {
+            toggleLoader();
             $.ajax({
                 url: ``,
                 method: "POST",
@@ -141,12 +153,14 @@
                 } else {
                     toastr.error(response.description);
                 }
+                toggleLoader();
             })
             .fail(function(jqXHR, textStatus) {
                 if (typeof jqXHR.responseJSON === "object") {
                     textStatus = jqXHR.responseJSON.description;
                 }
                 toastr.error(textStatus, "Request failed");
+                toggleLoader();
             });
         }
 
