@@ -1,35 +1,52 @@
 <div id="register-modal" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-dialog-centered pb-5" role="document">
         <div class="modal-content">
-            {# <div class="modal-header">
-                <h5 class="modal-title">Log In</h5>
+            <div class="modal-header">
+                <h5 class="modal-title">Please fill out your details</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-            </div> #}
-            <div class="modal-body pb-0">
-                <div class="form-group">
+            </div>
+            <div class="modal-body pb-1">
+                <div class="form-group m-0">
                     <div class="form-control mb-1 p-0 d-flex">
-                        <span class="py-2 px-3 bg-light"><i class="fa fa-envelope"></i></span>
-                        <input
-                            id="login-email"
-                            placeholder="E-mail"
-                            style="border: none;"
-                            class="w-100 py-2 px-2"
-                            type="text"
-                        />
+                        <span class="py-2 px-3 bg-light rounded-left"><i class="fa fa-envelope"></i></span>
+                        <div style="flex-grow: 1">
+                            <input
+                                id="register-email"
+                                placeholder="E-mail"
+                                style="border: none;"
+                                class="w-100 py-2 px-2 rounded-right"
+                                type="text"
+                            />
+                        </div>
                     </div>
                     <div class="form-control mb-1 p-0 d-flex">
-                        <span class="py-2 px-3 bg-light"><i class="fa fa-key"></i></span>
-                        <input
-                            id="login-password"
-                            placeholder="Password"
-                            style="border: none;"
-                            class="w-100 py-2 px-2"
-                            type="password"
-                        />
+                        <span class="py-2 px-3 bg-light rounded-left"><i class="fa fa-key"></i></span>
+                        <div style="flex-grow: 1;">
+                            <input
+                                id="register-password"
+                                placeholder="Password"
+                                style="border: none;"
+                                class="w-100 py-2 px-2 rounded-right"
+                                type="password"
+                            />
+                        </div>
+                    </div>
+                    <div class="form-control mb-1 p-0 d-flex">
+                        <span class="py-2 px-3 bg-light rounded-left"><i class="fa fa-key"></i></span>
+                        <div style="flex-grow: 1;">
+                            <input
+                                id="register-repeat-password"
+                                placeholder="Repeat Password"
+                                style="border: none;"
+                                class="w-100 py-2 px-2 rounded-right"
+                                type="password"
+                            />
+                        </div>
                     </div>
                 </div>
+                <a class="font-weight-light px-2" href="#" style="font-size: 0.8rem;">Forgot your password</a>
             </div>
             <div class="modal-footer pt-1" style="border: none;">
                 <button id="modal-register-button" type="button" class="btn btn-primary">Register</button>

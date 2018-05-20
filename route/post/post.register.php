@@ -13,11 +13,6 @@
             // Get the email and the password
             $email = dataCheck($data["email"], "No email given", "empty");
             $password = dataCheck($data["password"], "No password given", "empty");
-            $repeat_password = dataCheck($data["repeat-password"], "No repeat password given", "empty");
-            
-            if ($password !== $repeat_password) {
-                throw new Exception("Passwords do not match");
-            }
             
             // Get the user from the database
             $db->prepareGetUserByEmail();

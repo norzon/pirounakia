@@ -31,6 +31,10 @@ class API {
         obj.body = obj.body || {};
         obj.headers = obj.headers || {};
         
+        if (!obj.headers['X-Request-With']) {
+            obj.headers['X-Request-With'] = 'XMLHttpRequest';
+        }
+        
         let url = this.domain + obj.url;
         if (obj.method.toLowerCase() === "get") {
             url += this.param(obj.body);
@@ -41,5 +45,21 @@ class API {
             body: obj.method.toLowerCase() !== "get" ? obj.body : undefined
         });
         return fetch(request);
+    }
+    
+    login (params) {
+        return this.ajax({
+            url: '/login',
+            method: 'POST',
+            body: params
+        });
+    }
+    
+    register (params) {
+        return this.ajax({
+            url: '/register',
+            method: 'POST',
+            body: params
+        });
     }
 }

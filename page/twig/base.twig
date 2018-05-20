@@ -106,6 +106,7 @@
 		<script src="assets/js/api.js"></script>
 			
 		<script>
+			// Setup toastr
 			toastr.options = {
                 "closeButton": false,
                 "debug": false,
@@ -127,6 +128,9 @@
 			let errors = JSON.parse(`{{ errors|json_encode|raw }}`);
 			errors.forEach(err => toastr.error(err));
 			{% endif %}
+			
+			// Setup API
+			const api = new API('{{ baseurl }}');
 		</script>
         {% block custom_js %}{% endblock custom_js %}
 
