@@ -104,7 +104,30 @@
 		<script src="assets/js/creative.min.js"></script>
 
 		<script src="assets/js/api.js"></script>
-
+			
+		<script>
+			toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": false,
+                "positionClass": "toast-top-center",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": 300,
+                "hideDuration": 250,
+                "timeOut": 0,
+                "extendedTimeOut": 0,
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+			}
+			{% if errors|length > 0 %}
+			let errors = JSON.parse(`{{ errors|json_encode|raw }}`);
+			errors.forEach(err => toastr.error(err));
+			{% endif %}
+		</script>
         {% block custom_js %}{% endblock custom_js %}
 
     {% endblock scripts %}

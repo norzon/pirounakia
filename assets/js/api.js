@@ -25,7 +25,13 @@ class API {
     }
 
     ajax (obj) {
-        let url = domain + obj.url;
+        obj = obj || {};
+        obj.url = obj.url || "";
+        obj.method = obj.method || "GET";
+        obj.body = obj.body || {};
+        obj.headers = obj.headers || {};
+        
+        let url = this.domain + obj.url;
         if (obj.method.toLowerCase() === "get") {
             url += this.param(obj.body);
         }

@@ -10,6 +10,7 @@
     require_once('class/Database.php');
     require_once('function/dataCheck.php');
     require_once('function/dataDefault.php');
+    require_once('function/detectAjax.php');
     
     if (!file_exists('config.php')) {
         require_once('class/Setup.php');
@@ -18,6 +19,12 @@
         $db = new Database($config["db"]);
     }
     
+    if (isset($_SESSION["errors"])) {
+        $errors = $_SESSION["errors"];
+        unset($_SESSION["errors"]);
+    } else {
+        $errors = [];
+    }
     
     /* Slim app and global/session variables */
     $app = new \Slim\App(['settings' => ['displayErrorDetails' => true]]);
@@ -78,6 +85,7 @@
         require_once('route/post/post.setup.php');
     } else {
         require_once('route/get/get.index.php');
+        require_once('route/post/post.login.php');
     }
     
     
