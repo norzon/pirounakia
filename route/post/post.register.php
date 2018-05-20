@@ -1,44 +1,46 @@
 <?php
-    $app->post("/login", function($request, $response){
+    $app->post("/register", function($request, $response){
         global $db, $baseurl, $errors;
         
         try {
+            if (isset($_SESSION["logged"]) && $_SESSION["logged"] === true) {
+                throw new Exception("Cannot register when logged in");
+            }
+            
             // Load post data
             $data = $request->getParsedBody();
             
             // Get the email and the password
             $email = dataCheck($data["email"], "No email given", "empty");
             $password = dataCheck($data["password"], "No password given", "empty");
+            $repeat_password = dataCheck($data["repeat-password"], "No repeat password given", "empty");
+            
+            if ($password !== $repeat_password) {
+                throw new Exception("Passwords do not match");
+            }
             
             // Get the user from the database
             $db->prepareGetUserByEmail();
             $user = $db->getUserByEmail($email);
             
             // Check that the user exists
-            if (empty($user)) {
-                throw new Exception("No user account found");
+            if (!empty($user)) {
+                throw new Exception("User account already exists");
             }
             
-            // Check if user has special conditions
-            if (!$user["is_active"]) {
-                throw new Exception("Your account has been disabled");
-            }
-            if ($user["is_locked"]) {
-                throw new Exception("Your account has been locked, an email has been sent to your account");
-            }
+            // Hash the password
+            $password = password_hash($password, PASSWORD_BCRYPT);
             
-            // Check that the passwords match
-            if (password_verify($password, $user["password"])) {
-                throw new Exception("Invalid password detected");
-            } else {
-                // Remove password from user array
-                unset($user["password"]);
-            }
+            // Insert user to the database
+            $db->prepareInsertUser(["email", "password"]);
+            $result = $db->insertUser([
+                "email" => $email,
+                "password" => $password
+            ]);
             
-            // Save user and login status on the session
-            $_SESSION["logged"] = true;
-            $_SESSION["admin"] = false;
-            $_SESSION["user"] = $user;
+            if (!$result) {
+                throw new Exception("Something went wrong");
+            }
             
             // Check if ajax request
             if (detectAjax($request)) {
@@ -47,18 +49,12 @@
                 ->withHeader("Content-Type", "application/json")
                 ->write(json_encode(array(
                     "success" => true,
-                    "description" => "Successfully logged in",
-                    "results" => [
-                        "email" => $user["email"],
-                        "firstname" => $user["firstname"],
-                        "lastname" => $user["lastname"],
-                        "token" => $user["token"]
-                    ]
+                    "description" => "Successfully registered"
                 )));
             } else {
                 return $response
                 ->withStatus(302)
-                ->withHeader("Location", $baseurl . "/");
+                ->withHeader("Location", $request->getReferrer());
             }
         } catch (Exception $e) {
             if (detectAjax($request)) {

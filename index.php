@@ -86,6 +86,7 @@
     } else {
         require_once('route/get/get.index.php');
         require_once('route/post/post.login.php');
+        require_once('route/post/post.register.php');
     }
     
     
