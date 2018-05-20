@@ -5,6 +5,9 @@ class API {
     }
 
     param (obj) {
+        if (!obj) {
+            return "";
+        }
         if (typeof jQuery === "function") {
             return jQuery.param(obj);
         }
@@ -31,8 +34,12 @@ class API {
         obj.body = obj.body || {};
         obj.headers = obj.headers || {};
         
-        if (!obj.headers['X-Request-With']) {
-            obj.headers['X-Request-With'] = 'XMLHttpRequest';
+        if (!obj.headers['X-Requested-With']) {
+            obj.headers['X-Requested-With'] = 'XMLHttpRequest';
+        }
+        
+        if (!obj.headers['content-type']) {
+            obj.headers['content-type'] = 'application/json';
         }
         
         let url = this.domain + obj.url;
@@ -42,7 +49,7 @@ class API {
         let request = new Request(url, {
             method: obj.method,
             headers: obj.headers,
-            body: obj.method.toLowerCase() !== "get" ? obj.body : undefined
+            body: obj.method.toLowerCase() !== "get" ? JSON.stringify(obj.body) : undefined
         });
         return fetch(request);
     }
@@ -52,6 +59,13 @@ class API {
             url: '/login',
             method: 'POST',
             body: params
+        });
+    }
+    
+    logout () {
+        return this.ajax({
+            url: '/logout',
+            method: 'GET'
         });
     }
     

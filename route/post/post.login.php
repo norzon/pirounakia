@@ -5,7 +5,7 @@
         try {
             // Load post data
             $data = $request->getParsedBody();
-            
+
             // Get the email and the password
             $email = dataCheck($data["email"], "No email given", "empty");
             $password = dataCheck($data["password"], "No password given", "empty");
@@ -17,22 +17,21 @@
             // Check that the user exists
             if (empty($user)) {
                 throw new Exception("No user account found");
+            } else {
+                $user = $user[0];
             }
-            
+
             // Check if user has special conditions
-            if (!$user["is_active"]) {
+            if (!$user->is_active) {
                 throw new Exception("Your account has been disabled");
             }
-            if ($user["is_locked"]) {
+            if ($user->is_locked) {
                 throw new Exception("Your account has been locked, an email has been sent to your account");
             }
             
             // Check that the passwords match
-            if (password_verify($password, $user["password"])) {
+            if (!password_verify($password, $user->password)) {
                 throw new Exception("Invalid password detected");
-            } else {
-                // Remove password from user array
-                unset($user["password"]);
             }
             
             // Save user and login status on the session
@@ -49,10 +48,10 @@
                     "success" => true,
                     "description" => "Successfully logged in",
                     "results" => [
-                        "email" => $user["email"],
-                        "firstname" => $user["firstname"],
-                        "lastname" => $user["lastname"],
-                        "token" => $user["token"]
+                        "email" => $user->email,
+                        "firstname" => $user->firstname,
+                        "lastname" => $user->lastname,
+                        "token" => $user->token
                     ]
                 )));
             } else {
