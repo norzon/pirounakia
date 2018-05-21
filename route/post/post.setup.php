@@ -68,5 +68,5 @@ EOF;
                 "description" => $e->getMessage()
             )));
         }
-    });
+    })->setName('post.setup');
 ?>

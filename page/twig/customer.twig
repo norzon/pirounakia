@@ -2,4 +2,5 @@
 {% block navbar_menu %}
     {{ parent() }}
     {% include 'template/navbar_item.twig' with {'href': baseurl ~ '/my', 'html': 'My Profile'} %}
+    {% include 'template/navbar_item.twig' with {'href': baseurl ~ '/logout', 'html': 'Logout'} %}
 {% endblock navbar_menu %}

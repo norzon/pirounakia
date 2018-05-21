@@ -18,22 +18,82 @@
         $('a[href="#login"]').click(() => $("#login-modal").modal("show"));
         $('a[href="#register"]').click(() => $("#register-modal").modal("show"));
         
+        function login () {
+            let email = $("#login-email").val();
+            let password = $("#login-password").val();
+            
+            if (!email) {
+                return toastr.error("Please enter your email");
+            }
+            
+            if (!password) {
+                return toastr.error("Please enter your password");
+            }
+            
+            api.login({
+                email: email,
+                password: password
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.assign(baseurl);
+                } else {
+                    toastr.error(data.description);
+                }
+            })
+            .catch(err => {
+                toastr.error(err);
+            });
+        }
+        
+        function register () {
+            let email = $("#register-email").val();
+            let password = $("#register-password").val();
+            
+            if (!email) {
+                return toastr.error("Please enter your email");
+            }
+            
+            if (!password) {
+                return toastr.error("Please enter your password");
+            }
+            
+            if (password != $("#register-repeat-password").val()) {
+                return toastr.error("Passwords do not match");
+            }
+            
+            api.register({
+                email: email,
+                password: password
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // window.location.assign(baseurl);
+                    toastr.success(data.description);
+                    $("#register-modal").modal('hide');
+                } else {
+                    toastr.error(data.description);
+                }
+            })
+            .catch(err => {
+                toastr.error(err);
+            })
+        }
 
-        $("#modal-login-button").click(function(){
-            // Send email and password to the server
-
-            // if all ok reload page
-
-            // if error display error message
+        $("#modal-login-button").click(login);
+        $('#login-email, #login-password').on('keydown', function(e) {
+            if (e.originalEvent.keyCode === 13 && $("#login-email").val() && $("#login-password").val()) {
+                login();
+            }
         });
-
-
-        $("#modal-register-button").click(function(){
-            // Send data to the server
-
-            // if all ok reload page
-
-            // if error display error message
+        
+        $("#modal-register-button").click(register);
+        $('#register-email, #register-password, #register-repeat-password').on('keydown', function(e) {
+            if (e.originalEvent.keyCode === 13 && $("#register-email").val() && $("#register-password").val() && $("#register-repeat-password").val()) {
+                register();
+            }
         });
     });
 </script>

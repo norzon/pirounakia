@@ -49,7 +49,8 @@ class API {
         let request = new Request(url, {
             method: obj.method,
             headers: obj.headers,
-            body: obj.method.toLowerCase() !== "get" ? JSON.stringify(obj.body) : undefined
+            body: obj.method.toLowerCase() !== "get" ? JSON.stringify(obj.body) : undefined,
+            credentials: 'include'
         });
         return fetch(request);
     }

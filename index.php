@@ -21,13 +21,23 @@
     
     if (isset($_SESSION["errors"])) {
         $errors = $_SESSION["errors"];
-        unset($_SESSION["errors"]);
+        $_SESSION["errors"] = [];
     } else {
         $errors = [];
     }
     
+    $response_body = [];
+    $response_url = "/";
+    $response_code = 200;
+    $response_content = "application/json";
+    
     /* Slim app and global/session variables */
-    $app = new \Slim\App(['settings' => ['displayErrorDetails' => true]]);
+    $app = new \Slim\App([
+        'settings' => [
+            'displayErrorDetails' => true,
+            'determineRouteBeforeAppMiddleware' => true
+        ]
+    ]);
 
 
     
@@ -35,6 +45,56 @@
     --- Middlewares ---
     !Important! The last declared runs first
     */
+    $app->add(function ($request, $response, $next) {
+        global $baseurl, $response_body, $response_code, $response_content, $response_url;
+        $route = $request->getAttribute('route');
+        $name = $route->getName();
+        $passthrough = ['get.index', 'get.setup', 'post.setup'];
+        if (!in_array($name, $passthrough)) {
+            try {
+                $response = $next($request, $response);
+                // Check if ajax request
+                if (detectAjax($request)) {
+                    $response = $response
+                    ->withStatus($response_code)
+                    ->withHeader("Content-Type", $response_content)
+                    ->write($response_body);
+                } else {
+                    $response = $response
+                    ->withStatus(302)
+                    ->withHeader("Location", $baseurl . $response_url);
+                }
+            } catch (Exception $e) {
+                if (detectAjax($request)) {
+                    $response = $response
+                    ->withStatus(400)
+                    ->withHeader("Content-Type", "application/json")
+                    ->write(json_encode(array(
+                        "success" => false,
+                        "description" => $e->getMessage()
+                    )));
+                } else {
+                    $_SESSION["errors"][] = $e->getMessage();
+                    
+                    $referer = $request->getHeader("Referer");
+                    if (is_array($referer) && !empty($referer)) {
+                        $referer = $referer[0];
+                    } else {
+                        $referer = '/';
+                    }
+                    $response = $response
+                    ->withStatus(302)
+                    ->withHeader("Location", $referer);
+                }
+            } finally {
+                return $response;
+            }
+        } else {
+            $response = $next($request, $response);
+            return $response;
+        }
+    });
+    
     // Middleware for getting token in header
     // Only a user can use this, not an employee
     $app->add(function ($request, $response, $next) {
@@ -85,8 +145,9 @@
         require_once('route/post/post.setup.php');
     } else {
         require_once('route/get/get.index.php');
-        require_once('route/post/post.login.php');
         require_once('route/get/get.logout.php');
+        
+        require_once('route/post/post.login.php');
         require_once('route/post/post.register.php');
     }
     

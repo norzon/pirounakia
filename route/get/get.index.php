@@ -27,5 +27,5 @@
         }
 
         return $twig->render($response, $page, $data);
-    });
+    })->setName('get.index');
 ?>
