@@ -9,8 +9,13 @@
                 $reservations = $db->getReservations();
             } else {
                 $db->prepareGetUserReservations();
-                $reservations = $db->getUserReservations($_SESSION["token"]);
+                $reservations = $db->getUserReservations($_SESSION["user"]->id);
             }
+        }
+        
+        $today = date("Y-m-d H:i:s");
+        for ($i=0; $i < count($reservations); $i++) { 
+            $reservations[$i]->cancellable = ($reservations[$i]->date > $today) ? true : false;
         }
         
         $response = $response->withStatus(200)->withHeader("Content-Type", "text/html");

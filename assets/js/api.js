@@ -77,4 +77,20 @@ class API {
             body: params
         });
     }
+    
+    updateProfile (params) {
+        return this.ajax({
+            url: '/profile',
+            method: 'PUT',
+            body: params
+        });
+    }
+    
+    createReservation (params) {
+        return this.ajax({
+            url: '/reservation',
+            method: 'POST',
+            body: params
+        });
+    }
 }

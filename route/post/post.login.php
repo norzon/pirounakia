@@ -42,6 +42,7 @@
             "success" => true,
             "description" => "Successfully logged in",
             "results" => [
+                "id" => $user->id,
                 "email" => $user->email,
                 "firstname" => $user->firstname,
                 "lastname" => $user->lastname,

@@ -124,6 +124,7 @@
                 $_SESSION["logged"] = true;
                 $_SESSION["admin"] = false;
                 $_SESSION["token"] = $token;
+                $_SESSION["user"] = $user;
             }
         }
         
@@ -159,8 +160,13 @@
             require_once('route/get/get.profile.php');
         }
         
+        // POST
         require_once('route/post/post.login.php');
         require_once('route/post/post.register.php');
+        require_once('route/post/post.reservation.php');
+        
+        // PUT
+        require_once('route/put/put.profile.php');
     }
     
     

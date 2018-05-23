@@ -7,16 +7,261 @@
 {% endblock navbar_menu %}
 
 {% block body %}
-    <div class="container h-100 bg-dark text-light pt-5">
-        <div class="px-2 py-3">
-            <h2 class="section-heading text-white">Reservations</h2>
+    <div class="container pt-5 d-flex flex-wrap-reverse">
+        <div class="col-lg-8 pt-5">
+            <div class="px-2">
+                {% if session.admin %}
+                <h2 class="section-heading">Reservations</h2>
+                {% else %}
+                <h2 class="section-heading">My Reservations</h2>
+                {% endif %}
+            </div>
+            <table id="reservation-table" class="table table-bordered">
+                <thead>
+                    <th>#</th>
+                    <th>People</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </thead>
+                <tbody>
+                    {% set count = 1 %}
+                    {% for reservation in reservations %}
+                    <tr>
+                        <td>{{ count }}</td>
+                        <td>{{ reservation.people }}</td>
+                        <td>{{ reservation.date }}</td>
+                        {% if reservation.cancellable %}
+                            <td>
+                                <div class="btn btn-danger"><i class="fa fa-trash"></i> Cancel</div>
+                            </td>
+                        {% else %}
+                            <td class="text-muted">None</td>
+                        {% endif %}
+                    </tr>
+                    {% set count = count + 1 %}
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <table id="reservation-table" class="table">
-            <thead>
-                <th></th>
-            </thead>
-            <tbody>
-            </tbody>
-        </table>
+        <div class="col-lg-4 pt-5">
+            <div class="card w-100">
+                <div class="card-body d-flex flex-wrap">
+                    <h5 class="card-title text-center w-100">{{ session.user.email }}</h5>
+                    {% if session.user.firstname or session.user.lastname %}
+                    <h6 class="card-subtitle text-muted w-50 m-0 text-center">
+                        {% if session.user.firstname %}
+                            {{ session.user.firstname }} 
+                        {% endif %}
+                        {{session.user.lastname}}
+                    </h6>
+                    {% else %}
+                    <p class="card-text w-100">To make a reservation you have to fill out your details</p>
+                    {% endif %}
+                    <a href="#details" class="card-link w-50 text-center">My details</a>
+                </div>
+                <div class="card-footer">
+                    <div class="form-group m-0">
+                        <div class="form-control mb-1 p-0 d-flex">
+                            <span class="py-2 px-3 bg-light rounded-left"><i class="fa fa-users"></i></span>
+                            <div style="flex-grow: 1">
+                                <input
+                                    id="reservation-people"
+                                    placeholder="Number of customers"
+                                    style="border: none;"
+                                    class="w-100 py-2 px-2 rounded-right"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-control mb-1 p-0 d-flex">
+                            <span class="py-2 px-3 bg-light rounded-left"><i class="fa fa-calendar"></i></span>
+                            <div style="flex-grow: 1;">
+                                <input
+                                    id="reservation-date"
+                                    placeholder="Reservation date"
+                                    style="border: none;"
+                                    class="w-100 py-2 px-2 rounded-right"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-control mb-1 p-0 d-flex">
+                            <span class="py-2 px-3 bg-light rounded-left"><i class="fa fa-clock-o"></i></span>
+                            <div style="flex-grow: 1;">
+                                <input
+                                    id="reservation-time"
+                                    placeholder="Reservation time"
+                                    style="border: none;"
+                                    class="w-100 py-2 px-2 rounded-right"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex pt-2">
+                        <button id="reservation-save" type="button" class="btn btn-primary w-50">Save</button>
+                        <button id="reservation-cancel" type="button" class="btn btn-warning w-50">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    
+    <div id="details-modal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered pb-5" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Please fill out your details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body pb-1">
+                    <div class="form-group m-0">
+                        <div class="form-control mb-1 p-0 d-flex">
+                            <span class="py-2 px-3 bg-light rounded-left">F</span>
+                            <div style="flex-grow: 1">
+                                <input
+                                    id="details-firstname"
+                                    placeholder="Firstname"
+                                    style="border: none;"
+                                    class="w-100 py-2 px-2 rounded-right"
+                                    type="text"
+                                    value="{{ session.user.firstname }}"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        <div class="form-control mb-1 p-0 d-flex">
+                            <span class="py-2 px-3 bg-light rounded-left">L</span>
+                            <div style="flex-grow: 1;">
+                                <input
+                                    id="details-lastname"
+                                    placeholder="Lastname"
+                                    style="border: none;"
+                                    class="w-100 py-2 px-2 rounded-right"
+                                    type="text"
+                                    value="{{ session.user.lastname }}"
+                                    required
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer pt-1" style="border: none;">
+                    <button id="modal-details-button" type="button" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="reservation-modal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Please fill out the details</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body pb-1">
+                        
+                    </div>
+                    <div class="modal-footer pt-1" style="border: none;">
+                        <button id="modal-reservation-button" type="button" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 {% endblock body %}
+
+{% block custom_js %}
+<script>
+    // Shorthand version of $(document).ready();
+    $(() => {
+        $('a[href="#details"]').click(() => $("#details-modal").modal("show"));
+        $('a[href="#reservation"]').click(() => $("#reservation-modal").modal("show"));
+        
+        $('#reservation-cancel').click(() => $("#reservation-people, #reservation-date, #reservation-time").val(""));
+        
+        $('#reservation-save').click(() => {
+            let people = $('#reservation-people ').val();
+            let date = $('#reservation-date ').val();
+            let time = $('#reservation-time').val();
+            
+            if (!people) {
+                return toastr.error("Please enter the number of people");
+            }
+            if (!date) {
+                return toastr.error("Please enter the date of the reservation");
+            }
+            if (!time) {
+                return toastr.error("Please enter the time of the reservation");
+            }
+            
+            api.createReservation({
+                people: people,
+                date: new Date(date + " " + time).toISOString()
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    toastr.success(data.description + ". Reloading!");
+                    setTimeout(function(){ window.location.reload() }, 1000);
+                } else {
+                    toastr.error(data.description);
+                }
+            })
+            .catch(err => {
+                toastr.error(err);
+            });
+        });
+        
+        $('#modal-details-button').click(() => {
+            let firstname = $("#details-firstname").val();
+            let lastname = $("#details-lastname").val();
+            
+            if (!firstname) {
+                return toastr.error("Please enter your firstname");
+            }
+            
+            if (!lastname) {
+                return toastr.error("Please enter your lastname");
+            }
+            
+            api.updateProfile({
+                firstname: firstname,
+                lastname: lastname
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    toastr.success(data.description + ". Reloading!");
+                    $("#details-modal").modal("hide");
+                    setTimeout(function(){
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    toastr.error(data.description);
+                }
+            })
+            .catch(err => {
+                toastr.error(err);
+            });
+        });
+        
+        flatpickr("#reservation-date", {
+            minDate: new Date()
+        });
+        
+        flatpickr("#reservation-time", {
+            enableTime: true,
+            noCalendar: true,
+            minTime: "16:00",
+            maxTime: "22:00"
+        });
+    });
+</script>
+{% endblock custom_js %}

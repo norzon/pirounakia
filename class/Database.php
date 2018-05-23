@@ -256,20 +256,20 @@
             $tu = $this->tablenames['user'];
             $this->prepare(
                 "get.reservation",
-                "SELECT `{$tr}`.*
-                FROM `{$tr}`
-                INNER JOIN `{$tu}` ON `{$tu}`.`id` = `{$tr}`.`uid`
-                WHERE `{$tu}`.`token` = :token;"
+                "SELECT *
+                FROM `{$this->tablenames['reservation']}`
+                WHERE `uid` = :uid
+                ORDER BY `date` DESC;"
             );
         }
 
         /**
-         * Get user by token
+         * Get user by id
          * @access public
-         * @param token The user's token
+         * @param uid The user's id
          */
-        public function getUserReservations ($token) {
-            return $this->execute("get.reservation", array(":token" => $token));
+        public function getUserReservations ($uid) {
+            return $this->execute("get.reservation", array(":uid" => $uid));
         }
 
 
@@ -327,6 +327,69 @@
         public function insertUser ($data) {
             $data = $this->transformData($data);
             return $this->execute("insert.user", $data);
+        }
+        
+        
+        /**
+         * Prepare to insert a new reservation
+         */
+        public function prepareInsertReservation ($columns) {
+            $col = join($columns, ", ");
+            $val = join($this->transformKeys($columns), ", ");
+            $this->prepare(
+                "insert.reservation",
+                "INSERT INTO `{$this->tablenames['reservation']}` ($col)
+                VALUES ($val)"
+            );
+        }
+
+
+        /**
+         * Insert new reservation
+         * @access public
+         * @param data An array of key->value pairs
+         */
+        public function insertReservation ($data) {
+            $data = $this->transformData($data);
+            return $this->execute("insert.reservation", $data);
+        }
+        
+        
+        /*
+        |----------------------------------------------------------------
+        |
+        |   Database updates below
+        |
+        |----------------------------------------------------------------
+        */
+        
+        /**
+         * Prepare to update a new user
+         */
+        public function prepareUpdateUser ($columns) {
+            $values = $this->transformKeys($columns);
+            $str = [];
+            for ($i=0; $i < count($columns); $i++) { 
+                $str[] = "`${columns[$i]}`={$values[$i]}";
+            }
+            $str = join($str, ", ");
+            $this->prepare(
+                "update.user",
+                "UPDATE `{$this->tablenames['user']}` SET $str
+                WHERE `id`=:uid"
+            );
+        }
+
+
+        /**
+         * Update new user
+         * @access public
+         * @param data An array of key->value pairs
+         */
+        public function updateUser ($uid, $data) {
+            $data = $this->transformData($data);
+            $data[":uid"] = $uid;
+            return $this->execute("update.user", $data);
         }
     }
 ?>
