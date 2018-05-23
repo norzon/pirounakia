@@ -9,11 +9,11 @@
 {% block body %}
     <div class="container pt-5 d-flex flex-wrap-reverse">
         <div class="col-lg-8 pt-5">
-            <div class="px-2">
+            <div class="px-2 mb-4">
                 {% if session.admin %}
-                <h2 class="section-heading">Reservations</h2>
+                <h2 class="section-heading m-0">Reservations</h2>
                 {% else %}
-                <h2 class="section-heading">My Reservations</h2>
+                <h2 class="section-heading m-0">My Reservations</h2>
                 {% endif %}
             </div>
             <table id="reservation-table" class="table table-bordered">
@@ -32,7 +32,7 @@
                         <td>{{ reservation.date }}</td>
                         {% if reservation.cancellable %}
                             <td>
-                                <div class="btn btn-danger"><i class="fa fa-trash"></i> Cancel</div>
+                                <div class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Cancel</div>
                             </td>
                         {% else %}
                             <td class="text-muted">None</td>
@@ -44,7 +44,7 @@
             </table>
         </div>
         <div class="col-lg-4 pt-5">
-            <div class="card w-100">
+            <div class="card w-100 mt-3">
                 <div class="card-body d-flex flex-wrap">
                     <h5 class="card-title text-center w-100">{{ session.user.email }}</h5>
                     {% if session.user.firstname or session.user.lastname %}
@@ -262,6 +262,8 @@
             minTime: "16:00",
             maxTime: "22:00"
         });
+        
+        $('#reservation-table').DataTable()
     });
 </script>
 {% endblock custom_js %}
