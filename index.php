@@ -38,6 +38,11 @@
             'determineRouteBeforeAppMiddleware' => true
         ]
     ]);
+    
+    
+    $_SESSION["logged"] = dataDefault($_SESSION["logged"], false);
+    $_SESSION["admin"] = dataDefault($_SESSION["admin"], false);
+    $_SESSION["token"] = dataDefault($_SESSION["token"], null);
 
 
     
@@ -48,9 +53,11 @@
     $app->add(function ($request, $response, $next) {
         global $baseurl, $response_body, $response_code, $response_content, $response_url;
         $route = $request->getAttribute('route');
-        $name = $route->getName();
-        $passthrough = ['get.index', 'get.setup', 'post.setup'];
-        if (!in_array($name, $passthrough)) {
+        if (!empty($route)) {
+            $name = $route->getName();
+            $passthrough = ['get.index', 'get.setup', 'post.setup', 'get.profile'];
+        }
+        if (isset($name, $passthrough) && !in_array($name, $passthrough)) {
             try {
                 $response = $next($request, $response);
                 // Check if ajax request
@@ -144,8 +151,13 @@
         require_once('route/get/get.setup.php');
         require_once('route/post/post.setup.php');
     } else {
+        // GET
         require_once('route/get/get.index.php');
         require_once('route/get/get.logout.php');
+        
+        if ($_SESSION["logged"] === true) {
+            require_once('route/get/get.profile.php');
+        }
         
         require_once('route/post/post.login.php');
         require_once('route/post/post.register.php');

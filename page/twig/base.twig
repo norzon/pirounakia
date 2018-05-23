@@ -24,6 +24,9 @@
 
 		<!-- 'Creative' stylesheet -->
 		<link href="assets/css/creative.min.css" rel="stylesheet">
+		
+		<!-- Overriding other stylesheet's properties -->
+		<link href="assets/css/override.css" rel="stylesheet">
 
 		<style>
 			header.masthead {
@@ -37,7 +40,11 @@
 <body>
 
 	{% block navbar %}
+		{% if navbar_dark %}
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+		{% else %}
 		<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+		{% endif %}
 			<div class="container">
 				<a class="navbar-brand js-scroll-trigger" href="#page-top">{{ options.navbar_brand }}</a>
 				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"

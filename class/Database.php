@@ -145,7 +145,7 @@
             $this->prepare(
                 "get.users",
                 "SELECT *
-                FROM {$this->tablenames['user']};"
+                FROM `{$this->tablenames['user']}`;"
             );
         }
 
@@ -166,7 +166,7 @@
             $this->prepare(
                 "get.user",
                 "SELECT *
-                FROM {$this->tablenames['user']}
+                FROM `{$this->tablenames['user']}`
                 WHERE `id` = :id;"
             );
         }
@@ -188,7 +188,7 @@
             $this->prepare(
                 "get.user",
                 "SELECT *
-                FROM {$this->tablenames['user']}
+                FROM `{$this->tablenames['user']}`
                 WHERE `email` = :email;"
             );
         }
@@ -211,7 +211,7 @@
             $this->prepare(
                 "get.user",
                 "SELECT *
-                FROM {$this->tablenames['user']}
+                FROM `{$this->tablenames['user']}`
                 WHERE `token` = :token;"
             );
         }
@@ -223,6 +223,53 @@
          */
         public function getUserByToken ($token) {
             return $this->execute("get.user", array(":token" => $token));
+        }
+
+        /**
+         * Prepare to get reservations
+         * @access public
+         */
+        public function prepareGetReservations () {
+            $this->prepare(
+                "get.reservation",
+                "SELECT *
+                FROM `{$this->tablenames['reservation']}`
+                WHERE `date` > CURRENT_DATE;"
+            );
+        }
+
+        /**
+         * Get user by token
+         * @access public
+         * @param token The user's token
+         */
+        public function getReservations () {
+            return $this->execute("get.reservation");
+        }
+        
+        /**
+         * Prepare to get reservations for a user
+         * @access public
+         */
+        public function prepareGetUserReservations () {
+            $tr = $this->tablenames['reservation'];
+            $tu = $this->tablenames['user'];
+            $this->prepare(
+                "get.reservation",
+                "SELECT `{$tr}`.*
+                FROM `{$tr}`
+                INNER JOIN `{$tu}` ON `{$tu}`.`id` = `{$tr}`.`uid`
+                WHERE `{$tu}`.`token` = :token;"
+            );
+        }
+
+        /**
+         * Get user by token
+         * @access public
+         * @param token The user's token
+         */
+        public function getUserReservations ($token) {
+            return $this->execute("get.reservation", array(":token" => $token));
         }
 
 
@@ -242,7 +289,7 @@
         public function prepareInsertOption () {
             $this->prepare(
                 "insert.option",
-                "INSERT INTO {$this->tablenames['options']} (`alias`, `value`)
+                "INSERT INTO `{$this->tablenames['options']}` (`alias`, `value`)
                 VALUES (:alias, :value)"
             );
         }
@@ -266,7 +313,7 @@
             $val = join($this->transformKeys($columns), ", ");
             $this->prepare(
                 "insert.user",
-                "INSERT INTO {$this->tablenames['user']} ($col)
+                "INSERT INTO `{$this->tablenames['user']}` ($col)
                 VALUES ($val)"
             );
         }

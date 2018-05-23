@@ -1,0 +1,22 @@
+{% extends "base.twig" %}
+
+{% set navbar_dark = true %}
+{% block navbar_menu %}
+    {% include 'template/navbar_item.twig' with {'href': baseurl ~ '/', 'html': 'Home'} %}
+    {% include 'template/navbar_item.twig' with {'href': baseurl ~ '/logout', 'html': 'Logout'} %}
+{% endblock navbar_menu %}
+
+{% block body %}
+    <div class="container h-100 bg-dark text-light pt-5">
+        <div class="px-2 py-3">
+            <h2 class="section-heading text-white">Reservations</h2>
+        </div>
+        <table id="reservation-table" class="table">
+            <thead>
+                <th></th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+{% endblock body %}
