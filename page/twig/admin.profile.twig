@@ -9,39 +9,37 @@
 {% block body %}
     <div class="container pt-5 d-flex flex-wrap-reverse">
         <div class="col-lg-8 pt-5">
-            <div class="px-2 mb-4">
-                {% if session.admin %}
-                <h2 class="section-heading m-0">Reservations</h2>
-                {% else %}
-                <h2 class="section-heading m-0">My Reservations</h2>
-                {% endif %}
+            <div id="users">
+                <div class="px-2 mb-4">
+                    <h2 class="section-heading m-0">Users</h2>
+                </div>
+                <table id="user-table" class="table table-bordered">
+                    <thead>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Firstname</th>
+                        <th>Lastname</th>
+                        <th>Admin</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
-            <table id="reservation-table" class="table table-bordered">
-                <thead>
-                    <th>#</th>
-                    <th>People</th>
-                    <th>Date</th>
-                    <th>Actions</th>
-                </thead>
-                <tbody>
-                    {% set count = 1 %}
-                    {% for reservation in reservations %}
-                    <tr>
-                        <td>{{ count }}</td>
-                        <td>{{ reservation.people }}</td>
-                        <td class="reservation-date">{{ reservation.date_time }}</td>
-                        {% if reservation.cancellable %}
-                            <td>
-                                <div class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Cancel</div>
-                            </td>
-                        {% else %}
-                            <td class="text-muted">None</td>
-                        {% endif %}
-                    </tr>
-                    {% set count = count + 1 %}
-                    {% endfor %}
-                </tbody>
-            </table>
+            <div id="reservations">
+                <div class="px-2 mb-4">
+                    <h2 class="section-heading m-0">Reservations</h2>
+                </div>
+                <table id="reservation-table" class="table table-bordered">
+                    <thead>
+                        <th>ID</th>
+                        <th>People</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
         <div class="col-lg-4 pt-5">
             <div class="card w-100 mt-3">
@@ -58,9 +56,23 @@
                     <p class="card-text w-100">To make a reservation you have to fill out your details</p>
                     {% endif %}
                     <a href="#details" class="card-link w-50 text-center">My details</a>
+                    <a href="#reservations" class="card-link text-center">Reservations</a>
+                    <a href="#users" class="card-link text-center">Users</a>
                 </div>
-                <div class="card-footer">
+                <!-- <div class="card-footer">
                     <div class="form-group m-0">
+                        <div class="form-control mb-1 p-0 d-flex">
+                            <span class="py-2 px-3 bg-light rounded-left"><i class="fa fa-users"></i></span>
+                            <div style="flex-grow: 1">
+                                <input
+                                    id="reservation-people"
+                                    placeholder="User"
+                                    style="border: none;"
+                                    class="w-100 py-2 px-2 rounded-right"
+                                    type="text"
+                                />
+                            </div>
+                        </div>
                         <div class="form-control mb-1 p-0 d-flex">
                             <span class="py-2 px-3 bg-light rounded-left"><i class="fa fa-users"></i></span>
                             <div style="flex-grow: 1">
@@ -102,87 +114,92 @@
                         <button id="reservation-save" type="button" class="btn btn-primary w-50">Save</button>
                         <button id="reservation-cancel" type="button" class="btn btn-warning w-50">Clear</button>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
     
-    <div id="details-modal" class="modal" tabindex="-1" role="dialog">
-        <div class="modal-dialog modal-dialog-centered pb-5" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Please fill out your details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body pb-1">
-                    <div class="form-group m-0">
-                        <div class="form-control mb-1 p-0 d-flex">
-                            <span class="py-2 px-3 bg-light rounded-left">F</span>
-                            <div style="flex-grow: 1">
-                                <input
-                                    id="details-firstname"
-                                    placeholder="Firstname"
-                                    style="border: none;"
-                                    class="w-100 py-2 px-2 rounded-right"
-                                    type="text"
-                                    value="{{ session.user.firstname }}"
-                                    required
-                                />
-                            </div>
-                        </div>
-                        <div class="form-control mb-1 p-0 d-flex">
-                            <span class="py-2 px-3 bg-light rounded-left">L</span>
-                            <div style="flex-grow: 1;">
-                                <input
-                                    id="details-lastname"
-                                    placeholder="Lastname"
-                                    style="border: none;"
-                                    class="w-100 py-2 px-2 rounded-right"
-                                    type="text"
-                                    value="{{ session.user.lastname }}"
-                                    required
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer pt-1" style="border: none;">
-                    <button id="modal-details-button" type="button" class="btn btn-primary">Save</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div id="reservation-modal" class="modal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Please fill out the details</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body pb-1">
-                        
-                    </div>
-                    <div class="modal-footer pt-1" style="border: none;">
-                        <button id="modal-reservation-button" type="button" class="btn btn-primary">Save</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+    {% include 'template/modal_details.twig' %}
 {% endblock body %}
 
 {% block custom_js %}
 <script>
+    const app = {};
+    
+    function getReservations () {
+        api.ajax({
+            url: '/reservation',
+            method: 'GET'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                return toastr.error(data.description);
+            }
+            if (app.reservation_table) {
+                app.reservation_table.destroy();
+            }
+            let count = 1;
+            let cancel_btn = '<div class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Cancel</div>';
+            data.results.forEach(res => {
+                let d = new Date(res.res_date + " " + res.res_time + "Z");
+                d = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}, ${d.toLocaleTimeString()}`;
+                $("#reservation-table tbody").append(
+                    `<tr>
+                    <td>${res.id}</td>
+                    <td>${res.people}</td>
+                    <td>${d}</td>
+                    <td>${res.status || cancel_btn }</td>
+                    </tr>`
+                );
+                count++;
+            });
+            app.reservation_table = $('#reservation-table').DataTable();
+        })
+        .catch(res => toastr.error(res));
+    }
+    
+    function getUsers () {
+        api.ajax({
+            url: '/user',
+            method: 'GET'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (app.user_table) {
+                app.user_table.destroy();
+            }
+            let str = "";
+            data.results.forEach(user => {
+                str += `
+                    <tr><td>${user.id}</td>
+                    <td>${user.email}</td>
+                    <td>${user.firstname}</td>
+                    <td>${user.lastname }</td>
+                    <td>${user.is_admin }</td></tr>`;
+            });
+            $("#user-table tbody").append(str);
+            app.user_table = $('#user-table').DataTable();
+        })
+        .catch(res => toastr.error(res));
+    }
     // Shorthand version of $(document).ready();
     $(() => {
         $('a[href="#details"]').click(() => $("#details-modal").modal("show"));
-        $('a[href="#reservation"]').click(() => $("#reservation-modal").modal("show"));
+        $('a[href="#reservations"]').click(() => {
+            $("#reservations").show()
+            $("#users").hide()
+            getReservations();
+        });
+        $('a[href="#users"]').click(() => {
+            $("#reservations").hide()
+            $("#users").show()
+            getUsers();
+        });
+        
+        getReservations();
+        
+        $("#users").hide();
         
         $('#reservation-cancel').click(() => $("#reservation-people, #reservation-date, #reservation-time").val(""));
         
@@ -262,12 +279,6 @@
             minTime: "16:00",
             maxTime: "22:00"
         });
-        
-        $(".reservation-date").each((i, elem) => {
-            let d = new Date(elem.innerHTML.split(" ").join("T") + "Z");
-            elem.innerHTML = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}, ${d.toLocaleTimeString()}`;
-        });
-        $('#reservation-table').DataTable()
     });
 </script>
 {% endblock custom_js %}

@@ -156,6 +156,8 @@
         // GET
         require_once('route/get/get.index.php');
         require_once('route/get/get.logout.php');
+        require_once('route/get/get.reservation.all.php');
+        require_once('route/get/get.user.all.php');
         
         if ($_SESSION["logged"] === true) {
             require_once('route/get/get.profile.php');

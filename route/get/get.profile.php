@@ -3,13 +3,16 @@
         global $db, $baseurl, $errors;
         
         $reservations = [];
+        $page = "";
         if ($_SESSION["logged"] === true) {
             if ($_SESSION["admin"] === true) {
                 $db->prepareGetReservations();
                 $reservations = $db->getReservations();
+                $page = "admin.profile.twig";
             } else {
                 $db->prepareGetUserReservations();
                 $reservations = $db->getUserReservations($_SESSION["user"]->id);
+                $page = "customer.profile.twig";
             }
         }
         
@@ -27,6 +30,6 @@
             "reservations" => $reservations
         );
 
-        return $twig->render($response, "profile.twig", $data);
+        return $twig->render($response, $page, $data);
     })->setName('get.profile');
 ?>

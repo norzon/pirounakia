@@ -1,0 +1,48 @@
+<div id="details-modal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered pb-5" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Please fill out your details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body pb-1">
+                <div class="form-group m-0">
+                    <div class="form-control mb-1 p-0 d-flex">
+                        <span class="py-2 px-3 bg-light rounded-left">F</span>
+                        <div style="flex-grow: 1">
+                            <input
+                                id="details-firstname"
+                                placeholder="Firstname"
+                                style="border: none;"
+                                class="w-100 py-2 px-2 rounded-right"
+                                type="text"
+                                value="{{ session.user.firstname }}"
+                                required
+                            />
+                        </div>
+                    </div>
+                    <div class="form-control mb-1 p-0 d-flex">
+                        <span class="py-2 px-3 bg-light rounded-left">L</span>
+                        <div style="flex-grow: 1;">
+                            <input
+                                id="details-lastname"
+                                placeholder="Lastname"
+                                style="border: none;"
+                                class="w-100 py-2 px-2 rounded-right"
+                                type="text"
+                                value="{{ session.user.lastname }}"
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer pt-1" style="border: none;">
+                <button id="modal-details-button" type="button" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

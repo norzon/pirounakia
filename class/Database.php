@@ -144,6 +144,30 @@
             return $this->execute("get.users");
         }
 
+        /**
+         * Prepare to get all users
+         * @access public
+         */
+        public function prepareGetUsersSafe () {
+            $this->prepare(
+                "get.users.safe",
+                "SELECT `id`,
+                        `email`,
+                        `firstname`,
+                        `lastname`,
+                        `is_admin`
+                FROM `{$this->tablenames['user']}`;"
+            );
+        }
+
+        /**
+         * Get all users
+         * @access public
+         */
+        public function getUsersSafe () {
+            return $this->execute("get.users.safe");
+        }
+
 
         /**
          * Prepare to get a user by id
@@ -221,7 +245,7 @@
                 "SELECT *
                 FROM `{$this->tablenames['reservation']}`
                 WHERE `user_id` = :uid
-                ORDER BY `date`, `time` DESC;"
+                ORDER BY `res_date`, `res_time` DESC;"
             );
         }
 
