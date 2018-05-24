@@ -9,6 +9,50 @@
 {% block body %}
     <div class="container pt-5 d-flex flex-wrap-reverse">
         <div class="col-lg-8 pt-5">
+            <div id="store">
+                <div class="px-2 mb-4">
+                    <h2 class="section-heading m-0">Store Days</h2>
+                </div>
+                <div class="card mb-3">
+                    <div class="form-group d-flex flex-wrap py-3 px-2 m-0">
+                        <div class="col-md-2 py-1 px-1">
+                            <select id="store-day" class="custom-select">
+                                <option selected disabled>Day of the Week</option>
+                                <option value="mon">Mon</option>
+                                <option value="tue">Tue</option>
+                                <option value="wed">Wed</option>
+                                <option value="thu">Thu</option>
+                                <option value="fri">Fri</option>
+                                <option value="sat">Sat</option>
+                                <option value="sun">Sun</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 py-1 px-1">
+                            <input id="store-open" class="form-control" type="text" placeholder="Opens">    
+                        </div>
+                        <div class="col-md-4 py-1 px-1">
+                            <input id="store-close" class="form-control" type="text" placeholder="Closes">
+                        </div>
+                        <div class="col-md-2 py-1 px-1">
+                            <input id="store-tables" class="form-control" type="text" placeholder="Tables">
+                        </div>
+                        <div class="w-100 pt-2 px-2 text-right">
+                            <div id="store-save" class="btn btn-primary btn-sm">Create</div>
+                        </div>
+                    </div>
+                </div>
+                <table id="store-table" class="table table-bordered">
+                    <thead>
+                        <th>ID</th>
+                        <th>Day</th>
+                        <th>Opens</th>
+                        <th>Closes</th>
+                        <th>Tables</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
             <div id="users">
                 <div class="px-2 mb-4">
                     <h2 class="section-heading m-0">Users</h2>
@@ -32,6 +76,7 @@
                 <table id="reservation-table" class="table table-bordered">
                     <thead>
                         <th>ID</th>
+                        <th>User ID</th>
                         <th>People</th>
                         <th>Date</th>
                         <th>Actions</th>
@@ -58,6 +103,7 @@
                     <a href="#details" class="card-link w-50 text-center">My details</a>
                     <a href="#reservations" class="card-link text-center">Reservations</a>
                     <a href="#users" class="card-link text-center">Users</a>
+                    <a href="#store" class="card-link text-center">Store</a>
                 </div>
                 <!-- <div class="card-footer">
                     <div class="form-group m-0">
@@ -147,6 +193,7 @@
                 $("#reservation-table tbody").append(
                     `<tr>
                     <td>${res.id}</td>
+                    <td>${res.user_id}</td>
                     <td>${res.people}</td>
                     <td>${d}</td>
                     <td>${res.status || cancel_btn }</td>
@@ -183,23 +230,87 @@
         })
         .catch(res => toastr.error(res));
     }
+    
+    function getStore () {
+        api.ajax({
+            url: '/store',
+            method: 'GET'
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (app.store_table) {
+                app.store_table.destroy();
+            }
+            let str = "";
+            data.results.forEach(sd => {
+                str += `
+                    <tr><td>${sd.id}</td>
+                    <td>${sd.day}</td>
+                    <td>${sd.open_time}</td>
+                    <td>${sd.close_time}</td>
+                    <td>${sd.tables}</td></tr>`;
+            });
+            $("#store-table tbody").append(str);
+            app.store_table = $('#store-table').DataTable();
+        })
+        .catch(res => toastr.error(res));
+    }
+    
+    function saveStore () {
+        let day = $("#store-day").val();
+        let open = $("#store-open").val();
+        let close = $("#store-close").val();
+        let tables = $("#store-tables").val();
+        
+        api.ajax({
+            url: '/store',
+            method: 'POST',
+            body: {
+                day: day,
+                open: open,
+                close: close,
+                tables: tables
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) {
+                return toastr.error(data.description);
+            }
+            getStore();
+        })
+        .catch(res => toastr.error(res));
+    }
+    
+    
     // Shorthand version of $(document).ready();
     $(() => {
         $('a[href="#details"]').click(() => $("#details-modal").modal("show"));
         $('a[href="#reservations"]').click(() => {
-            $("#reservations").show()
-            $("#users").hide()
+            $("#reservations").show();
+            $("#users").hide();
+            $("#store").hide();
             getReservations();
         });
         $('a[href="#users"]').click(() => {
-            $("#reservations").hide()
-            $("#users").show()
+            $("#reservations").hide();
+            $("#users").show();
+            $("#store").hide();
             getUsers();
         });
+        $('a[href="#store"]').click(() => {
+            $("#reservations").hide();
+            $("#users").hide();
+            $("#store").show();
+            getStore();
+        });
+        
+        $("#store-save").click(saveStore);
         
         getReservations();
         
         $("#users").hide();
+        $("#store").hide();
         
         $('#reservation-cancel').click(() => $("#reservation-people, #reservation-date, #reservation-time").val(""));
         
@@ -278,6 +389,15 @@
             noCalendar: true,
             minTime: "16:00",
             maxTime: "22:00"
+        });
+        
+        flatpickr("#store-open", {
+            enableTime: true,
+            noCalendar: true
+        });
+        flatpickr("#store-close", {
+            enableTime: true,
+            noCalendar: true
         });
     });
 </script>

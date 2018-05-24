@@ -38,7 +38,7 @@
         } else if (count($days) > 1) {
             throw new Exception("This date is not valid");
         } else {
-            $days = $day[0];
+            $days = $days[0];
         }
         
         $time_start = $date->format("H:i:s");
@@ -66,7 +66,7 @@
             throw new Exception("We are full on the requested date and time");
         }
         
-        $db->prepareInsertReservation(["user_id", "people", "date_time"]);
+        $db->prepareInsertReservation(["user_id", "res_date", "res_time", "people"]);
         $db->insertReservation([
             "user_id" => $user->id,
             "res_date" => $date->format("Y-m-d"),

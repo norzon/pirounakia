@@ -158,6 +158,7 @@
         require_once('route/get/get.logout.php');
         require_once('route/get/get.reservation.all.php');
         require_once('route/get/get.user.all.php');
+        require_once('route/get/get.store.php');
         
         if ($_SESSION["logged"] === true) {
             require_once('route/get/get.profile.php');
@@ -167,9 +168,13 @@
         require_once('route/post/post.login.php');
         require_once('route/post/post.register.php');
         require_once('route/post/post.reservation.php');
+        require_once('route/post/post.store.php');
         
         // PUT
         require_once('route/put/put.profile.php');
+        
+        // DELETE
+        require_once('route/delete/delete.reservation.php');
     }
     
     

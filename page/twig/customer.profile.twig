@@ -22,16 +22,16 @@
                 <tbody>
                     {% set count = 1 %}
                     {% for reservation in reservations %}
-                    <tr>
+                    <tr id="reservation-{{ reservation.id }}">
                         <td>{{ count }}</td>
                         <td>{{ reservation.people }}</td>
-                        <td class="reservation-date">{{ reservation.date_time }}</td>
-                        {% if reservation.cancellable %}
-                            <td>
-                                <div class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Cancel</div>
-                            </td>
+                        <td class="reservation-date">{{ reservation.res_date ~ " " ~ reservation.res_time }}</td>
+                        {% if reservation.status %}
+                            <td class="text-muted">{{ reservation.status }}</td>
                         {% else %}
-                            <td class="text-muted">None</td>
+                            <td>
+                                <div class="btn btn-danger btn-sm cancel-reservation"><i class="fa fa-trash"></i> Cancel</div>
+                            </td>
                         {% endif %}
                     </tr>
                     {% set count = count + 1 %}
@@ -114,6 +114,27 @@
         $('a[href="#reservation"]').click(() => $("#reservation-modal").modal("show"));
         
         $('#reservation-cancel').click(() => $("#reservation-people, #reservation-date, #reservation-time").val(""));
+        
+        $(".cancel-reservation").click(function(){
+            console.log(this);
+            let id = $(this).parents("tr").attr("id").split("-")[1];
+            api.ajax({
+                url: '/reservation/' + id,
+                method: 'DELETE'
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    toastr.success(data.description + ". Reloading!");
+                    setTimeout(function(){ window.location.reload() }, 1000);
+                } else {
+                    toastr.error(data.description);
+                }
+            })
+            .catch(err => {
+                toastr.error(err);
+            });
+        });
         
         $('#reservation-save').click(() => {
             let people = $('#reservation-people ').val();

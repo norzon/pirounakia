@@ -280,7 +280,7 @@
          * @param uid The user's id
          */
         public function getAvailability ($arr) {
-            return $this->execute("get.availability", $this->transformKeys($arr));
+            return $this->execute("get.availability", $this->transformData($arr));
         }
 
 
@@ -342,6 +342,30 @@
             return $this->execute("insert.reservation", $data);
         }
         
+        /**
+         * Prepare to insert a new store day
+         */
+        public function prepareInsertStoreDay ($columns) {
+            $col = join($columns, ", ");
+            $val = join($this->transformKeys($columns), ", ");
+            $this->prepare(
+                "insert.store_days",
+                "INSERT INTO `{$this->tablenames['store_days']}` ($col)
+                VALUES ($val)"
+            );
+        }
+
+
+        /**
+         * Insert new store day
+         * @access public
+         * @param data An array of key->value pairs
+         */
+        public function insertStoreDay ($data) {
+            $data = $this->transformData($data);
+            return $this->execute("insert.store_days", $data);
+        }
+        
         
         /*
         |----------------------------------------------------------------
@@ -352,7 +376,7 @@
         */
         
         /**
-         * Prepare to update a new user
+         * Prepare to update a user
          */
         public function prepareUpdateUser ($columns) {
             $values = $this->transformKeys($columns);
@@ -370,7 +394,7 @@
 
 
         /**
-         * Update new user
+         * Update user
          * @access public
          * @param data An array of key->value pairs
          */
@@ -378,6 +402,65 @@
             $data = $this->transformData($data);
             $data[":uid"] = $uid;
             return $this->execute("update.user", $data);
+        }
+        
+        /**
+         * Prepare to update a reservation
+         */
+        public function prepareUpdateReservation ($columns) {
+            $values = $this->transformKeys($columns);
+            $str = [];
+            for ($i=0; $i < count($columns); $i++) { 
+                $str[] = "`${columns[$i]}`={$values[$i]}";
+            }
+            $str = join($str, ", ");
+            $this->prepare(
+                "update.reservation",
+                "UPDATE `{$this->tablenames['reservation']}` SET $str
+                WHERE `id`=:rid"
+            );
+        }
+
+
+        /**
+         * Update reservation
+         * @access public
+         * @param data An array of key->value pairs
+         */
+        public function updateReservation ($rid, $data) {
+            $data = $this->transformData($data);
+            $data[":rid"] = $rid;
+            return $this->execute("update.reservation", $data);
+        }
+        
+        
+        /**
+         * Prepare to update a store day
+         */
+        public function prepareUpdateStoreDay ($columns) {
+            $values = $this->transformKeys($columns);
+            $str = [];
+            for ($i=0; $i < count($columns); $i++) { 
+                $str[] = "`${columns[$i]}`={$values[$i]}";
+            }
+            $str = join($str, ", ");
+            $this->prepare(
+                "update.store_days",
+                "UPDATE `{$this->tablenames['store_days']}` SET $str
+                WHERE `id`=:id"
+            );
+        }
+
+
+        /**
+         * Update store day
+         * @access public
+         * @param data An array of key->value pairs
+         */
+        public function updateStoreDay ($id, $data) {
+            $data = $this->transformData($data);
+            $data[":id"] = $id;
+            return $this->execute("update.store_days", $data);
         }
     }
 ?>
