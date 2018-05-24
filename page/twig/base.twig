@@ -5,7 +5,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>{{ options.site_title }}</title>
+        <title>
+			{% block site_title %}
+				Pirounakia {{ site_title_extension }}
+			{% endblock site_title %}
+		</title>
         <!-- Bootstrap -->
         <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
 		
@@ -85,6 +89,13 @@
 		<div class="loader"></div>
 	{% endblock loader %}
 	
+	{% set sections = [
+		'about',
+		'service',
+		'portfolio',
+		'contact',
+	] %}
+	
 	{% block navbar %}
 		{% if navbar_dark %}
 		<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
@@ -92,7 +103,7 @@
 		<nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
 		{% endif %}
 			<div class="container">
-				<a class="navbar-brand js-scroll-trigger" href="#page-top">{{ options.navbar_brand }}</a>
+				<a class="navbar-brand js-scroll-trigger" href="#page-top">Pirounakia</a>
 				<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive"
 					aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
@@ -100,9 +111,8 @@
 				<div class="collapse navbar-collapse" id="navbarResponsive">
 					<ul class="navbar-nav ml-auto">
 					{% block navbar_menu %}
-						{% set str = 'navbar_link_' %}
-						{% for option in options|keys if str in option %}
-							{% set vars = {'href': '#' ~ option[str|length:], 'html': attribute(options, option)|capitalize } %}
+						{% for section in sections %}
+							{% set vars = {'href': '#' ~ section, 'html': section|capitalize } %}
 							{% include 'template/navbar_item.twig' with vars %}
 						{% endfor %}
 					{% endblock navbar_menu %}
@@ -120,12 +130,12 @@
 					<div class="row">
 						<div class="col-lg-10 mx-auto">
 							<h1 class="text-uppercase">
-								<strong>{{ options.header_title }}</strong>
+								<strong>Welcome to<br>Pirounakia Grill</strong>
 							</h1>
 							<hr>
 						</div>
 						<div class="col-lg-8 mx-auto">
-							<p class="text-faded mb-5">{{ options.header_text }}</p>
+							<p class="text-faded mb-5">Please take a minute to look at what we can provide for you</p>
 							<a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">Find Out More</a>
 						</div>
 					</div>
@@ -133,9 +143,8 @@
 			</header>
 		{% endblock header %}
 		
-		{% set str = 'navbar_link_' %}
-		{% for option in options|keys if str in option %}
-			{% include 'sections/' ~ option[str|length:] ~ '.twig' %}
+		{% for section in sections %}
+			{% include 'sections/' ~ section ~ '.twig' %}
 		{% endfor %}
 
     {% endblock body %}
