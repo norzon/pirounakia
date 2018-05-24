@@ -6,18 +6,8 @@
          * @access protected
          */
         protected $tablenames = array(
-            "category" => "",
-            "company" => "",
-            "dish" => "",
-            "dish_ingredient" => "",
-            "employee" => "",
-            "ingredient" => "",
-            "options" => "",
-            "orders" => "",
             "reservation" => "",
-            "store" => "",
-            "store_dish" => "",
-            "tables" => "",
+            "store_days" => "",
             "user" => ""
         );
         
@@ -93,49 +83,46 @@
         |----------------------------------------------------------------
         */
 
+        /**
+         * Prepare to get all store days
+         * @access public
+         */
+        public function prepareGetStoreDays () {
+            $this->prepare(
+                "get.days",
+                "SELECT *
+                FROM `{$this->tablenames['store_days']}`;"
+            );
+        }
 
-        // /**
-        //  * Prepares to get all options
-        //  * @access public
-        //  */
-        // public function prepareGetOptions () {
-        //     $this->prepare(
-        //         "get.options",
-        //         "SELECT *
-        //         FROM `{$this->tablenames['options']}`;"
-        //     );
-        // }
+        /**
+         * Get all store days
+         * @access public
+         */
+        public function getStoreDays () {
+            return $this->execute("get.days");
+        }
 
-        // /**
-        //  * Gets the options from the DB
-        //  * @access public
-        //  */
-        // public function getOptions () {
-        //     return $this->execute("get.options");
-        // }
+        /**
+         * Prepare to get a store day
+         * @access public
+         */
+        public function prepareGetStoreDay () {
+            $this->prepare(
+                "get.day",
+                "SELECT *
+                FROM `{$this->tablenames['store_days']}`
+                WHERE `day` = :day;"
+            );
+        }
 
-
-        // /**
-        //  * Prepares to get option by some alias
-        //  */
-        // public function prepareGetOption () {
-        //     $this->prepare(
-        //         "get.option",
-        //         "SELECT *
-        //         FROM `{$this->tablenames['options']}`
-        //         WHERE `alias` LIKE :option;"
-        //     );
-        // }
-
-        // /**
-        //  * Get option by alias
-        //  * @access public
-        //  * @param str The string to search by
-        //  */
-        // public function getOption ($str) {
-        //     return $this->execute("get.option", array(":option" => "%$str%"));
-        // }
-
+        /**
+         * Get a store day
+         * @access public
+         */
+        public function getStoreDay ($day) {
+            return $this->execute("get.day", array(":day" => $day));
+        }
 
         /**
          * Prepare to get all users
@@ -211,7 +198,7 @@
                 "get.reservation",
                 "SELECT *
                 FROM `{$this->tablenames['reservation']}`
-                WHERE `date` > CURRENT_DATE;"
+                WHERE `res_date` > CURRENT_DATE;"
             );
         }
 
@@ -229,14 +216,12 @@
          * @access public
          */
         public function prepareGetUserReservations () {
-            $tr = $this->tablenames['reservation'];
-            $tu = $this->tablenames['user'];
             $this->prepare(
                 "get.reservation",
                 "SELECT *
                 FROM `{$this->tablenames['reservation']}`
-                WHERE `uid` = :uid
-                ORDER BY `date` DESC;"
+                WHERE `user_id` = :uid
+                ORDER BY `date`, `time` DESC;"
             );
         }
 
@@ -248,6 +233,31 @@
         public function getUserReservations ($uid) {
             return $this->execute("get.reservation", array(":uid" => $uid));
         }
+        
+        
+        /**
+         * Prepare to get availability for a reservation
+         * @access public
+         */
+        public function prepareGetAvailability () {
+            $this->prepare(
+                "get.availability",
+                "SELECT *
+                FROM `{$this->tablenames['reservation']}`
+                WHERE `res_date` = :date
+                AND `res_time` > :time_start
+                AND `res_time` < :time_end;"
+            );
+        }
+
+        /**
+         * Get user by id
+         * @access public
+         * @param uid The user's id
+         */
+        public function getAvailability ($arr) {
+            return $this->execute("get.availability", $this->transformKeys($arr));
+        }
 
 
 
@@ -258,29 +268,6 @@
         |
         |----------------------------------------------------------------
         */
-
-
-        // /**
-        //  * Prepare to insert an option
-        //  */
-        // public function prepareInsertOption () {
-        //     $this->prepare(
-        //         "insert.option",
-        //         "INSERT INTO `{$this->tablenames['options']}` (`alias`, `value`)
-        //         VALUES (:alias, :value)"
-        //     );
-        // }
-
-
-        // /**
-        //  * Insert the option by some alias and value
-        //  * No check needed, since both 'alias' and 'value' must be given
-        //  */
-        // public function insertOption ($data) {
-        //     $data = $this->transformData($data);
-        //     return $this->execute("insert.option", $data);
-        // }
-
 
         /**
          * Prepare to insert a new user

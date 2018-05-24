@@ -15,7 +15,7 @@
         
         $today = date("Y-m-d H:i:s");
         for ($i=0; $i < count($reservations); $i++) { 
-            $reservations[$i]->cancellable = ($reservations[$i]->date > $today) ? true : false;
+            $reservations[$i]->cancellable = ($reservations[$i]->date_time > $today) ? true : false;
         }
         
         $response = $response->withStatus(200)->withHeader("Content-Type", "text/html");

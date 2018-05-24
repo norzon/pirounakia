@@ -36,7 +36,8 @@
         'settings' => [
             'displayErrorDetails' => true,
             'determineRouteBeforeAppMiddleware' => true
-        ]
+        ],
+        'debug' => true
     ]);
     
     
@@ -148,7 +149,6 @@
     
     /* Routes */
     // Include setup route only if config does not exist
-    require_once('route/get/get.test.php');
     if (!file_exists('config.php')) {
         require_once('route/get/get.setup.php');
         require_once('route/post/post.setup.php');
