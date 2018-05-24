@@ -147,7 +147,7 @@
                         toastr.success(`Reloading the page in ${timeout}`);
                         setTimeout(function(){
                             window.location.reload();
-                        }, timeout * 5);
+                        }, timeout * 1000);
                     }, 2500);
                 } else if (response.file) {
                     $("#form").attr("hidden", "");

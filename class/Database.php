@@ -94,47 +94,47 @@
         */
 
 
-        /**
-         * Prepares to get all options
-         * @access public
-         */
-        public function prepareGetOptions () {
-            $this->prepare(
-                "get.options",
-                "SELECT *
-                FROM `{$this->tablenames['options']}`;"
-            );
-        }
+        // /**
+        //  * Prepares to get all options
+        //  * @access public
+        //  */
+        // public function prepareGetOptions () {
+        //     $this->prepare(
+        //         "get.options",
+        //         "SELECT *
+        //         FROM `{$this->tablenames['options']}`;"
+        //     );
+        // }
 
-        /**
-         * Gets the options from the DB
-         * @access public
-         */
-        public function getOptions () {
-            return $this->execute("get.options");
-        }
+        // /**
+        //  * Gets the options from the DB
+        //  * @access public
+        //  */
+        // public function getOptions () {
+        //     return $this->execute("get.options");
+        // }
 
 
-        /**
-         * Prepares to get option by some alias
-         */
-        public function prepareGetOption () {
-            $this->prepare(
-                "get.option",
-                "SELECT *
-                FROM `{$this->tablenames['options']}`
-                WHERE `alias` LIKE :option;"
-            );
-        }
+        // /**
+        //  * Prepares to get option by some alias
+        //  */
+        // public function prepareGetOption () {
+        //     $this->prepare(
+        //         "get.option",
+        //         "SELECT *
+        //         FROM `{$this->tablenames['options']}`
+        //         WHERE `alias` LIKE :option;"
+        //     );
+        // }
 
-        /**
-         * Get option by alias
-         * @access public
-         * @param str The string to search by
-         */
-        public function getOption ($str) {
-            return $this->execute("get.option", array(":option" => "%$str%"));
-        }
+        // /**
+        //  * Get option by alias
+        //  * @access public
+        //  * @param str The string to search by
+        //  */
+        // public function getOption ($str) {
+        //     return $this->execute("get.option", array(":option" => "%$str%"));
+        // }
 
 
         /**
@@ -202,29 +202,6 @@
             return $this->execute("get.user", array(":email" => $email));
         }
 
-
-        /**
-         * Prepare to get user by token
-         * @access public
-         */
-        public function prepareGetUserByToken () {
-            $this->prepare(
-                "get.user",
-                "SELECT *
-                FROM `{$this->tablenames['user']}`
-                WHERE `token` = :token;"
-            );
-        }
-
-        /**
-         * Get user by token
-         * @access public
-         * @param token The user's token
-         */
-        public function getUserByToken ($token) {
-            return $this->execute("get.user", array(":token" => $token));
-        }
-
         /**
          * Prepare to get reservations
          * @access public
@@ -283,26 +260,26 @@
         */
 
 
-        /**
-         * Prepare to insert an option
-         */
-        public function prepareInsertOption () {
-            $this->prepare(
-                "insert.option",
-                "INSERT INTO `{$this->tablenames['options']}` (`alias`, `value`)
-                VALUES (:alias, :value)"
-            );
-        }
+        // /**
+        //  * Prepare to insert an option
+        //  */
+        // public function prepareInsertOption () {
+        //     $this->prepare(
+        //         "insert.option",
+        //         "INSERT INTO `{$this->tablenames['options']}` (`alias`, `value`)
+        //         VALUES (:alias, :value)"
+        //     );
+        // }
 
 
-        /**
-         * Insert the option by some alias and value
-         * No check needed, since both 'alias' and 'value' must be given
-         */
-        public function insertOption ($data) {
-            $data = $this->transformData($data);
-            return $this->execute("insert.option", $data);
-        }
+        // /**
+        //  * Insert the option by some alias and value
+        //  * No check needed, since both 'alias' and 'value' must be given
+        //  */
+        // public function insertOption ($data) {
+        //     $data = $this->transformData($data);
+        //     return $this->execute("insert.option", $data);
+        // }
 
 
         /**

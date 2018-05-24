@@ -23,14 +23,6 @@
         } else {
             $user = $user[0];
         }
-
-        // Check if user has special conditions
-        if (!$user->is_active) {
-            throw new Exception("Your account has been disabled");
-        }
-        if ($user->is_locked) {
-            throw new Exception("Your account has been locked, an email has been sent to your account");
-        }
         
         $db->prepareInsertReservation(["uid", "date", "people"]);
         $db->insertReservation([

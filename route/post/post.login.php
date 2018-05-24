@@ -19,14 +19,6 @@
         } else {
             $user = $user[0];
         }
-
-        // Check if user has special conditions
-        if (!$user->is_active) {
-            throw new Exception("Your account has been disabled");
-        }
-        if ($user->is_locked) {
-            throw new Exception("Your account has been locked, an email has been sent to your account");
-        }
         
         // Check that the passwords match
         if (!password_verify($password, $user->password)) {
@@ -35,7 +27,7 @@
         
         // Save user and login status on the session
         $_SESSION["logged"] = true;
-        $_SESSION["admin"] = false;
+        $_SESSION["admin"] = $user->is_admin ? true : false;
         $_SESSION["user"] = $user;
         
         $response_body = json_encode(array(
@@ -45,8 +37,7 @@
                 "id" => $user->id,
                 "email" => $user->email,
                 "firstname" => $user->firstname,
-                "lastname" => $user->lastname,
-                "token" => $user->token
+                "lastname" => $user->lastname
             ]
         ));
         $response_url = "/";

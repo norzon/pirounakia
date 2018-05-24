@@ -56,7 +56,11 @@
          * @param prefix The table name prefix if any
          */
         public function createSchema () {
-            $this->exec(schema($this->options["prefix"]), "Create Database Tables and Data");
+            $queries = explode("CREATE TABLE", schema($this->options["prefix"]));
+            foreach ($queries as $query) {
+                $query = "CREATE TABLE" . $query;
+                $this->exec($query, "Create Database Tables and Data");
+            }
         }
     }
 ?>
