@@ -222,7 +222,7 @@
                 "get.reservations",
                 "SELECT *
                 FROM `{$this->tablenames['reservation']}`
-                WHERE `res_date` > CURRENT_DATE;"
+                ORDER BY `res_date`, `res_time` DESC;"
             );
         }
 
@@ -292,7 +292,8 @@
                 FROM `{$this->tablenames['reservation']}`
                 WHERE `res_date` = :date
                 AND `res_time` >= :time_start
-                AND `res_time` <= :time_end;"
+                AND `res_time` <= :time_end
+                AND LOWER(`status`) != 'cancelled';"
             );
         }
 

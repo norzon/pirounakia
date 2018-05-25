@@ -335,7 +335,7 @@
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    toastr.success(data.description + ". Reloading!");
+                    toastr.success(data.description);
                     getReservations();
                 } else {
                     toastr.error(data.description);
