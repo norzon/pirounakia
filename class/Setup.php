@@ -41,8 +41,8 @@
             $this->createSchema();
             
             // Insert admin below
-            $db->prepareInsertUser(["email", "password"]);
-            $result = $db->insertUser([
+            $this->prepareInsertUser(["email", "password"]);
+            $this->insertUser([
                 "email" => "admin",
                 "password" => password_hash("admin", PASSWORD_BCRYPT)
             ]);
