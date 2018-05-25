@@ -22,6 +22,7 @@
         
         // Check that the day exists
         if (!empty($store_day)) {
+            $store_day = $store_day[0];
             $db->prepareUpdateStoreDay(["day", "open_time", "close_time", "tables"]);
             $db->updateStoreDay($store_day->id, [
                 "day" => $day,
