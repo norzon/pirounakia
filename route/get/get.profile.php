@@ -21,13 +21,17 @@
             $reservations[$i]->cancellable = (($reservations[$i]->res_date . " " . $reservations[$i]->res_time) > $today) ? true : false;
         }
         
+        $db->prepareGetStoreDays();
+        $store_days = $db->getStoreDays();
+        
         $response = $response->withStatus(200)->withHeader("Content-Type", "text/html");
         $twig = new \Slim\Views\Twig('page/twig');
         $data = array(
             "baseurl" => $baseurl,
             "session" => $_SESSION,
             "errors" => $errors,
-            "reservations" => $reservations
+            "reservations" => $reservations,
+            "store_days" => $store_days
         );
 
         return $twig->render($response, $page, $data);

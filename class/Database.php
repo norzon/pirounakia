@@ -219,7 +219,7 @@
          */
         public function prepareGetReservations () {
             $this->prepare(
-                "get.reservation",
+                "get.reservations",
                 "SELECT *
                 FROM `{$this->tablenames['reservation']}`
                 WHERE `res_date` > CURRENT_DATE;"
@@ -227,12 +227,34 @@
         }
 
         /**
-         * Get user by token
+         * Get all reservations
          * @access public
          * @param token The user's token
          */
         public function getReservations () {
-            return $this->execute("get.reservation");
+            return $this->execute("get.reservations");
+        }
+        
+        /**
+         * Prepare to get a reservation
+         * @access public
+         */
+        public function prepareGetReservation () {
+            $this->prepare(
+                "get.reservation",
+                "SELECT *
+                FROM `{$this->tablenames['reservation']}`
+                WHERE `id` = :id;"
+            );
+        }
+
+        /**
+         * Get a reservation
+         * @access public
+         * @param token The user's token
+         */
+        public function getReservation ($id) {
+            return $this->execute("get.reservation", array(":id" => $id));
         }
         
         /**
@@ -241,7 +263,7 @@
          */
         public function prepareGetUserReservations () {
             $this->prepare(
-                "get.reservation",
+                "get.user.reservations",
                 "SELECT *
                 FROM `{$this->tablenames['reservation']}`
                 WHERE `user_id` = :uid
@@ -255,7 +277,7 @@
          * @param uid The user's id
          */
         public function getUserReservations ($uid) {
-            return $this->execute("get.reservation", array(":uid" => $uid));
+            return $this->execute("get.user.reservations", array(":uid" => $uid));
         }
         
         
@@ -269,8 +291,8 @@
                 "SELECT *
                 FROM `{$this->tablenames['reservation']}`
                 WHERE `res_date` = :date
-                AND `res_time` > :time_start
-                AND `res_time` < :time_end;"
+                AND `res_time` >= :time_start
+                AND `res_time` <= :time_end;"
             );
         }
 

@@ -29,6 +29,10 @@
         $date = dataCheck($data["date"], "No date given", "empty");
         $date = new DateTime($date);
         
+        if ($_SESSION["admin"] === true) {
+            $uid = dataCheck($data["uid"], "No user id given", "empty");
+        }
+        
         $week_day = strtoupper($date->format("D"));
         $db->prepareGetStoreDay();
         $days = $db->getStoreDay($week_day);
@@ -68,7 +72,7 @@
         
         $db->prepareInsertReservation(["user_id", "res_date", "res_time", "people"]);
         $db->insertReservation([
-            "user_id" => $user->id,
+            "user_id" => dataDefault($uid, $user->id),
             "res_date" => $date->format("Y-m-d"),
             "res_time" => $time_start,
             "people" => $people

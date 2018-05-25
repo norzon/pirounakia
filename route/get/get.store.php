@@ -4,12 +4,8 @@
         
         $days = [];
         if ($_SESSION["logged"] === true) {
-            if ($_SESSION["admin"] === true) {
-                $db->prepareGetStoreDays();
-                $days = $db->getStoreDays();
-            } else {
-                throw new Exception("You do not have access");
-            }
+            $db->prepareGetStoreDays();
+            $days = $db->getStoreDays();
         } else {
             throw new Exception("You are not logged in");
         }

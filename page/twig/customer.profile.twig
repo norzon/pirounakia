@@ -8,7 +8,7 @@
 
 {% block body %}
     <div class="container pt-5 d-flex flex-wrap-reverse">
-        <div class="col-lg-8 pt-5">
+        <div class="col-lg-8 pt-5 pb-4">
             <div class="px-2 mb-4">
                 <h2 class="section-heading m-0">My Reservations</h2>
             </div>
@@ -62,7 +62,7 @@
                             <div style="flex-grow: 1">
                                 <input
                                     id="reservation-people"
-                                    placeholder="Number of customers"
+                                    placeholder="Number of people"
                                     style="border: none;"
                                     class="w-100 py-2 px-2 rounded-right"
                                     type="text"
@@ -108,6 +108,7 @@
 
 {% block custom_js %}
 <script>
+    const app = {};
     // Shorthand version of $(document).ready();
     $(() => {
         $('a[href="#details"]').click(() => $("#details-modal").modal("show"));
@@ -116,7 +117,6 @@
         $('#reservation-cancel').click(() => $("#reservation-people, #reservation-date, #reservation-time").val(""));
         
         $(".cancel-reservation").click(function(){
-            console.log(this);
             let id = $(this).parents("tr").attr("id").split("-")[1];
             api.ajax({
                 url: '/reservation/' + id,
@@ -202,15 +202,48 @@
             });
         });
         
-        flatpickr("#reservation-date", {
-            minDate: new Date()
+        let availableDays = {{ store_days|json_encode()|raw }}.map(d => {
+            switch (d.day) {
+                case "SUN": d.day = 0; break;
+                case "MON": d.day = 1; break;
+                case "TUE": d.day = 2; break;
+                case "WED": d.day = 3; break;
+                case "THU": d.day = 4; break;
+                case "FRI": d.day = 5; break;
+                case "SAT": d.day = 6; break;
+            }
+            return d;
+        });
+        app.res_date = flatpickr("#reservation-date", {
+            minDate: new Date(),
+            enable: [
+                function(date) {
+                    let match = false;
+                    availableDays.forEach(d => {
+                        if (date.getDay() == d.day) {
+                            match = true;
+                        }
+                    });
+                    if (match) {
+                        return true;
+                    }
+                    return false;
+                }
+            ],
+            onChange: function(selectedDates, dateStr, instance) {
+                availableDays.forEach(d => {
+                    if (selectedDates[0].getDay() == d.day) {
+                        app.res_time.config.minTime = d.open_time;
+                        app.res_time.config.maxTime = d.close_time;
+                        app.res_time.clear();
+                    }
+                });
+            }
         });
         
-        flatpickr("#reservation-time", {
+        app.res_time = flatpickr("#reservation-time", {
             enableTime: true,
-            noCalendar: true,
-            minTime: "16:00",
-            maxTime: "22:00"
+            noCalendar: true
         });
         
         $(".reservation-date").each((i, elem) => {
