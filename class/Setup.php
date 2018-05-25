@@ -36,7 +36,16 @@
             if ($this->getConnStatus()["valid"] == false) {
                 throw new Exception($this->getConnStatus()["status"]);
             }
+            
+            // Create the schema
             $this->createSchema();
+            
+            // Insert admin below
+            $db->prepareInsertUser(["email", "password"]);
+            $result = $db->insertUser([
+                "email" => "admin",
+                "password" => password_hash("admin", PASSWORD_BCRYPT)
+            ]);
         }
 
 

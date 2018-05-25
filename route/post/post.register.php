@@ -13,6 +13,10 @@
         $email = dataCheck($data["email"], "No email given", "empty");
         $password = dataCheck($data["password"], "No password given", "empty");
         
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            throw new Exception("$email is not a valid email address");
+        }
+        
         // Get the user from the database
         $db->prepareGetUserByEmail();
         $user = $db->getUserByEmail($email);
