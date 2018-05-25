@@ -61,12 +61,17 @@
             "time_start" => $time_start,
             "time_end" => $time_end
         ]);
-        
+        $reservations = $reservations[0]->people;
+        $reservations = ceil(($reservations - 2) / 2);
+        if ($reservations < 0) {
+            $reservations = 0;
+        }
         $required_tables = ceil(($people - 2) / 2);
         if ($required_tables < 1) {
             $required_tables = 1;
         }
-        if (count($reservations) + $required_tables > $days->tables) {
+        
+        if ($reservations + $required_tables > $days->tables) {
             throw new Exception("We are full on the requested date and time");
         }
         

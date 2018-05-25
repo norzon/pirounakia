@@ -294,12 +294,12 @@
         public function prepareGetAvailability () {
             $this->prepare(
                 "get.availability",
-                "SELECT *
+                "SELECT SUM(`people`) AS people
                 FROM `{$this->tablenames['reservation']}`
                 WHERE `res_date` = :date
                 AND `res_time` >= :time_start
                 AND `res_time` <= :time_end
-                AND LOWER(`status`) != 'cancelled';"
+                AND `status` IS NULL;"
             );
         }
 
