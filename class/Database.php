@@ -65,7 +65,14 @@
             return $new_data;
         }
         
-        
+        /**
+         * Transforms the array values to include ':' character at the
+         * beggining of the value
+         * 
+         * This is used when only columns are give
+         * 
+         * @example ["name", "surname"] will become [":name", ":surname"]
+         */
         private function transformKeys ($data) {
             $new_data = [];
             for ($i=0; $i < count($data); $i++) { 
@@ -145,7 +152,7 @@
         }
 
         /**
-         * Prepare to get all users
+         * Prepare to get all users, safe mode (no password)
          * @access public
          */
         public function prepareGetUsersSafe () {
@@ -161,7 +168,7 @@
         }
 
         /**
-         * Get all users
+         * Get all users, safe mode (no password)
          * @access public
          */
         public function getUsersSafe () {
@@ -229,7 +236,6 @@
         /**
          * Get all reservations
          * @access public
-         * @param token The user's token
          */
         public function getReservations () {
             return $this->execute("get.reservations");
@@ -251,7 +257,7 @@
         /**
          * Get a reservation
          * @access public
-         * @param token The user's token
+         * @param id The user's id
          */
         public function getReservation ($id) {
             return $this->execute("get.reservation", array(":id" => $id));
@@ -272,7 +278,7 @@
         }
 
         /**
-         * Get user by id
+         * Get reservations for a user
          * @access public
          * @param uid The user's id
          */
@@ -282,7 +288,7 @@
         
         
         /**
-         * Prepare to get availability for a reservation
+         * Prepare to get availability for a day time
          * @access public
          */
         public function prepareGetAvailability () {
@@ -298,9 +304,9 @@
         }
 
         /**
-         * Get user by id
+         * Get availability for a day time
          * @access public
-         * @param uid The user's id
+         * @param arr An array for the prepared values
          */
         public function getAvailability ($arr) {
             return $this->execute("get.availability", $this->transformData($arr));
@@ -318,6 +324,7 @@
 
         /**
          * Prepare to insert a new user
+         * @param columns An array of the columns to insert
          */
         public function prepareInsertUser ($columns) {
             $col = join($columns, ", ");
@@ -343,6 +350,7 @@
         
         /**
          * Prepare to insert a new reservation
+         * @param columns An array of the columns to insert
          */
         public function prepareInsertReservation ($columns) {
             $col = join($columns, ", ");
@@ -367,6 +375,7 @@
         
         /**
          * Prepare to insert a new store day
+         * @param columns An array of the columns to insert
          */
         public function prepareInsertStoreDay ($columns) {
             $col = join($columns, ", ");
@@ -400,6 +409,7 @@
         
         /**
          * Prepare to update a user
+         * @param columns An array of the columns to update
          */
         public function prepareUpdateUser ($columns) {
             $values = $this->transformKeys($columns);
@@ -419,6 +429,7 @@
         /**
          * Update user
          * @access public
+         * @param uid The user's id
          * @param data An array of key->value pairs
          */
         public function updateUser ($uid, $data) {
@@ -429,6 +440,7 @@
         
         /**
          * Prepare to update a reservation
+         * @param columns An array of the columns to update
          */
         public function prepareUpdateReservation ($columns) {
             $values = $this->transformKeys($columns);
@@ -448,6 +460,7 @@
         /**
          * Update reservation
          * @access public
+         * @param rid The reservation's id
          * @param data An array of key->value pairs
          */
         public function updateReservation ($rid, $data) {
@@ -459,6 +472,7 @@
         
         /**
          * Prepare to update a store day
+         * @param columns An array of the columns to update
          */
         public function prepareUpdateStoreDay ($columns) {
             $values = $this->transformKeys($columns);
@@ -478,6 +492,7 @@
         /**
          * Update store day
          * @access public
+         * @param id The id of the store day
          * @param data An array of key->value pairs
          */
         public function updateStoreDay ($id, $data) {

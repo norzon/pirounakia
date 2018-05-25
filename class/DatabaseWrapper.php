@@ -84,9 +84,10 @@
          * Constructor
          * @access public
          * @param domain The domain/url of the database
-         * @param name The DB user name
-         * @param pass The DB user password
+         * @param username The DB user name
+         * @param password The DB user password
          * @param database The DB database name
+         * @param port The DB database port
          */
         public function __construct ($options) {
             $this->domain = $options["domain"];
@@ -103,6 +104,7 @@
             if (!empty($this->database))
                 $str .= ";dbname=$this->database";
             
+            // Initiate new Query Collection Class
             $this->collection = new QueryCollection();
             
             // Try to connect

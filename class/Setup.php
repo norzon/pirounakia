@@ -15,11 +15,12 @@
          */
         public function __construct ($options = []) {
             if (empty($options))
-            throw new Exception("Empty paramater 'options'");
+                throw new Exception("Empty paramater 'options'");
             
             if (!is_array($options))
-            throw new Exception("Parameter 'options' must be array of key value pairs");
+                throw new Exception("Parameter 'options' must be array of key value pairs");
             
+            // Check inputs
             dataCheck($options["domain"], "Database domain is not set", "empty");
             dataCheck($options["port"], "Database port is not set");
             dataCheck($options["username"], "Database username is not set", "empty");
@@ -40,6 +41,12 @@
             // Create the schema
             $this->createSchema();
             
+            /* 
+                !! Important !!
+                
+                This is only for demo purposes
+                In a production environment this should be deleted!
+            */
             // Insert admin below
             $this->prepareInsertUser(["email", "password", "is_admin"]);
             $this->insertUser([
