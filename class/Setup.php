@@ -41,10 +41,11 @@
             $this->createSchema();
             
             // Insert admin below
-            $this->prepareInsertUser(["email", "password"]);
+            $this->prepareInsertUser(["email", "password", "is_admin"]);
             $this->insertUser([
                 "email" => "admin",
-                "password" => password_hash("admin", PASSWORD_BCRYPT)
+                "password" => password_hash("admin", PASSWORD_BCRYPT),
+                "is_admin" => 1
             ]);
         }
 
